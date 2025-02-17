@@ -1,7 +1,11 @@
-<html><head><meta charset="UTF-8"/></head>
-<body style="background: #f6f6f6">
-<div style="background: white; margin: 3em;
-border:10px double gray; padding: 3em; font-size: 130%;">
-◊(->html ◊doc)
-</div>
-</body></html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/styles.css">  
+    <meta charset="UTF-8"/>
+  </head>
+  <body class="page">
+    <div class="container">
+      ◊(->html ◊doc)
+    </div>
+  </body>
+</html>

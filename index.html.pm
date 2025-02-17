@@ -15,16 +15,23 @@ Don’t you agree?"}
 
 ◊br[]◊br[]
 
-Currently I am:
+◊strong{Currently I am}:
 
 ◊items{
-  ◊item{ Co-Oping at ◊link["https://www.morsecorp.com"]{Morse Corp} as a fullstack software engineer primary focusing in backend testing automations. }
+  ◊item{ Co-Oping at ◊link["https://www.morsecorp.com"]{Morse Corp} as a fullstack software engineer primarily focusing in backend pipeline automations. }
   ◊item{ Building ◊link["https://dearly-35496165508.us-east1.run.app/"]{dearly}, a platform to connect with your friends and family in a more meaningful way. }
   ◊item{ Learning ◊link["https://github.com/stoneliuCS/dotfiles"]{NeoVim}, preparing for my first half marathon, and exploring new music! }
 }
 
-This is a space for my ◊em{thoughts}, enjoy.
+◊strong{Previously I was}:
+
+◊items{
+  ◊item{ Technical Lead for ◊link["https://generatenu.com"]{Generate Product Development} for the project Snapper. }
+  ◊item{ Taking ◊link["https://felleisen.org/matthias/4500-f24/index.html"]{Software Development} at Northeastern University. }
+}
+
+You can see my qualifications and experiences on my ◊link["https://github.com/stoneliuCS/resume/blob/main/StoneLiu_Resume.pdf"]{CV}.
 
 ◊br[]◊br[]
 
-◊image["me.jpg" #:width "50%" ] 
+This is a space for my ◊link["/blog.html"]{◊em{thoughts}}, enjoy.
