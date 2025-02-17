@@ -24,3 +24,7 @@ Currently I am:
 }
 
 This is a space for my ◊em{thoughts}, enjoy.
+
+◊br[]◊br[]
+
+◊image["me.jpg" #:width "50%" ] 
