@@ -12,7 +12,7 @@
   "images.rkt")
 
 (provide (all-defined-out))
-(define headline (default-tag-function 'h2))
+(define headline (default-tag-function 'h3))
 (define items (default-tag-function 'ul))
 (define item (default-tag-function 'li 'p))
 (define (link url text) `(a ((href ,url)) ,text))
