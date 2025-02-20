@@ -34,4 +34,4 @@ You can see my qualifications and experiences on my ◊link["https://github.com/
 
 ◊br[]◊br[]
 
-This is a space for my ◊link["/blog.html"]{◊em{thoughts}}, enjoy.
+This is a space for my ◊link["/blog/blog.html"]{◊em{thoughts}}, enjoy.

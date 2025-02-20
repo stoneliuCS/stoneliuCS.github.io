@@ -1,4 +1,6 @@
 #lang pollen
 
+◊(require (prefix-in blog-index: "blog/index.ptree"))
+
 index.html
-blog.html
+◊blog-index:doc

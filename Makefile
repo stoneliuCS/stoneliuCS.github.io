@@ -9,4 +9,5 @@ reset:
 clean:
 	rm -rf *.html
 	rm -rf compiled
+	rm -rf *.css
 
