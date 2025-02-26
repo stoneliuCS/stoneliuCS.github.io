@@ -18,11 +18,3 @@ Don’t you agree?"}
   ◊item{ Building ◊link["https://dearly-35496165508.us-east1.run.app/"]{dearly}, a platform to connect with your friends and family in a more meaningful way. }
   ◊item{ Learning ◊link["https://github.com/stoneliuCS/dotfiles"]{Neovim}, preparing for my first half marathon, and exploring new music! }
 }
-
-◊strong{previously I was},
-
-◊items{
-  ◊item{ Technical Lead for ◊link["https://generatenu.com"]{Generate Product Development} for the project Snapper. }
-  ◊item{ Taking ◊link["https://felleisen.org/matthias/4500-f24/index.html"]{Software Development} at Northeastern University. }
-}
-
