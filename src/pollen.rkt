@@ -6,7 +6,7 @@ pollen/tag
 sugar
 txexpr
 pollen/unstable/typography)
-
+(require pollen/tag pollen/template pollen/core txexpr sugar/coerce)
 (require
   "images.rkt")
 
