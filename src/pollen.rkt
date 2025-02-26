@@ -1,12 +1,11 @@
 #lang racket/base
-
- (require
-  pollen/decode
-  pollen/file
-  pollen/tag
-  sugar
-  txexpr
-  pollen/unstable/typography)
+(require
+pollen/decode
+pollen/file
+pollen/tag
+sugar
+txexpr
+pollen/unstable/typography)
 
 (require
   "images.rkt")

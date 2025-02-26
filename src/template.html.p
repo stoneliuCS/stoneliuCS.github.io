@@ -10,9 +10,9 @@
                Stone Liu
             </div>
             <div class="tabs">
-               <a href="/" class=tab>home</a> 
-               <a href="/blog" class=tab>journal</a> 
-               <a href="/scratchpad" class=tab>scratchpad</a> 
+               <a href="/index.html" class=tab>home</a> 
+               <a href="/blog/index.html" class=tab>journal</a> 
+               <a href="/scratchpad/index.html" class=tab>scratchpad</a> 
                <a href="https://github.com/stoneliuCS/resume/blob/main/StoneLiu_Resume.pdf" class=tab>resume</a>
             </div>
          </div>
