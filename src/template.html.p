@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
    <head>
-      <link rel="stylesheet" href="/styles.css">
+      <link rel="stylesheet" href="/website/styles.css">
       <meta charset="UTF-8"/>
    </head>
    <body class="page">
@@ -11,9 +11,9 @@
                Stone Liu
             </div>
             <div class="tabs">
-               <a href="/index.html" class=tab>home</a> 
-               <a href="/blog" class=tab>journal</a> 
-               <a href="/scratchpad" class=tab>scratchpad</a> 
+               <a href="/website/index.html" class=tab>home</a> 
+               <a href="/website/blog" class=tab>journal</a> 
+               <a href="/website/scratchpad" class=tab>scratchpad</a> 
                <a href="https://github.com/stoneliuCS/resume/blob/main/StoneLiu_Resume.pdf" class=tab>resume</a>
             </div>
          </div>
