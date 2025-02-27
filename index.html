@@ -3,6 +3,13 @@
    <head>
       <link rel="stylesheet" href="/styles.css">
       <meta charset="UTF-8"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/racket.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+      <script>
+        hljs.highlightAll();
+      </script>
    </head>
    <body class="page">
       <div class="container">
