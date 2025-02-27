@@ -22,9 +22,9 @@ My code does it in a very scuffed way, here is the relevant portion:
             break;
         num_parser += c
   }
-}
 
 The final solution does an accumulator approach, similar to ◊em{fundamentals one}, whether I did it properly is up for interpretation.
+}
 
 ◊highlight['python]{
   def encode(self, strs: List[str]) -> str:
