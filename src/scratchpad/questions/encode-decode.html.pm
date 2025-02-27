@@ -14,6 +14,7 @@ By doing it this way, we can effectively read how much more to parse after our d
 An interesting edge case comes from if a possible string can be of arbitrary length. We would need to somehow read that many digits + 1 (To account for our delimiter) before reading the string itself.
 
 My code does it in a very scuffed way, here is the relevant portion:
+
 ◊highlight['python]{
     num_parser = ""
     for c in s:
@@ -31,7 +32,6 @@ The final solution does an accumulator approach, similar to ◊em{fundamentals o
       for string in strs:
           length = len(string)
           result += f"{length}%{string}"
-      print(result)
       return result
 
   def decode(self, s: str) -> List[str]:
