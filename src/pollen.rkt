@@ -12,6 +12,7 @@ pollen/unstable/typography)
 
 (provide (all-defined-out))
 (define headline (default-tag-function 'h3))
+(define smaller-headline (default-tag-function 'h5))
 (define items (default-tag-function 'ul))
 (define item (default-tag-function 'li 'p))
 (define (link url text) `(a ((href ,url)) ,text))

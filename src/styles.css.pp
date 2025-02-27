@@ -5,6 +5,10 @@
   font-weight: 700;
 }
 
+p {
+    white-space: pre-wrap;
+}
+
 hr {
   border: none;
   height: 1px;

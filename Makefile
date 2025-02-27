@@ -1,10 +1,10 @@
 all: start
 
 start:
-	raco pollen start
+	cd src && raco pollen start
 
 reset:
-	raco pollen reset
+	cd src && raco pollen reset
 
 clean:
 	rm -rf build && \
