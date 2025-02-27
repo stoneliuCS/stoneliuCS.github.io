@@ -13,14 +13,6 @@ By doing it this way, we can effectively read how much more to parse after our d
 
 An interesting edge case comes from if a possible string can be of arbitrary length. We would need to somehow read that many digits + 1 (To account for our delimiter) before reading the string itself.
 
-My code does it in a very scuffed way, here is the relevant portion:
-◊highlight['python]{
-    num_parser = ""
-    for c in s:
-        if c == "%":
-            break;
-        num_parser += c
-  }
 The final solution does an accumulator approach, similar to ◊em{fundamentals one}, whether I did it properly is up for interpretation.
 }
 
@@ -50,4 +42,3 @@ The final solution does an accumulator approach, similar to ◊em{fundamentals o
               return decodeHelper(self, reststr, acc)
       return decodeHelper(self, s, [])
 }
-
