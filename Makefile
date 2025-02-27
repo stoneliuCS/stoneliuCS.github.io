@@ -8,10 +8,7 @@ reset:
 
 clean:
 	rm -rf build && \
-	cd src/ && \
-	rm -rf *.html compiled *.css \
-	./blog/*.html ./blog/compiled ./blog/*.css \
-	./scratchpad/*.html ./scratchpad/compiled ./scratchpad/*.css
+	find . \( -name "*.html" -o -name "*.css" \) -type f -print0 | xargs -0 /bin/rm -f
 
 open:
 	cd build/ && open index.html
