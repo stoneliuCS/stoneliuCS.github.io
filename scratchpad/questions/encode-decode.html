@@ -3,7 +3,7 @@
    <head>
       <link rel="stylesheet" href="/styles.css">
       <meta charset="UTF-8"/>
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/dark.min.css">
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
       <script>
@@ -35,7 +35,6 @@ By doing it this way, we can effectively read how much more to parse after our d
 An interesting edge case comes from if a possible string can be of arbitrary length. We would need to somehow read that many digits + 1 (To account for our delimiter) before reading the string itself.
 
 My code does it in a very scuffed way, here is the relevant portion:
-
 <div class="highlight"><div class="source"><table class="sourcetable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
 <span class="normal">2</span>
 <span class="normal">3</span>
@@ -48,7 +47,6 @@ My code does it in a very scuffed way, here is the relevant portion:
 </pre></div></td></tr></tbody></table></div>
 
 </div>
-
 The final solution does an accumulator approach, similar to <em>fundamentals one</em>, whether I did it properly is up for interpretation.</p>
 
 <div class="highlight"><div class="source"><table class="sourcetable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
