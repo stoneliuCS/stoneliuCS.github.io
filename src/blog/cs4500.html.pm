@@ -35,7 +35,7 @@
 
   I can talk about how representing complex forms of data such as images should be in the form of a data structure that could be rendered as an image.
 
-  Code is a message, to a future developer somewhere. If it wasn't, we would all be just writing machine code or getting stuck in the mentality of ◊em{"just getting it to work".}
+  Code is a message, to a future developer somewhere. If it wasn't, we would all be just writing machine code or getting stuck in the mentality of ◊em{"just getting it to work"}.
 
   ◊em{
     Would you do it again?
