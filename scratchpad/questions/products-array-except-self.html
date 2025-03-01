@@ -28,7 +28,6 @@
 
 Using a recursive/accumulator based approach to the problem:</p>
 
-
 <pre class="code-block"><code class="language-python">def productExceptSelf(self, nums: List[int]) -&gt; List[int]:
     return self.productExceptSelfHelper(nums, [0] * len(nums), 0)
 def productExceptSelfHelper(self, nums: List[int], acc: List[int], idx: int):

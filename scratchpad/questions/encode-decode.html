@@ -36,56 +36,30 @@ An interesting edge case comes from if a possible string can be of arbitrary len
 
 The final solution does an accumulator approach, similar to <em>fundamentals one</em>, whether I did it properly is up for interpretation.</p>
 
-<div class="highlight"><div class="source"><table class="sourcetable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="s2">""</span>
-    <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">strs</span><span class="p">:</span>
-        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s2">%</span><span class="si">{</span><span class="n">string</span><span class="si">}</span><span class="s2">"</span>
-    <span class="k">return</span> <span class="n">result</span>
+<pre class="code-block"><code class="language-python">def encode(self, strs: List[str]) -&gt; str:
+    result = ""
+    for string in strs:
+        length = len(string)
+        result += f"{length}%{string}"
+    return result
 
-<span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="k">def</span> <span class="nf">decodeHelper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">acc</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">acc</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">num_parser</span> <span class="o">=</span> <span class="s2">""</span>
-            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s2">"%"</span><span class="p">:</span>
-                    <span class="k">break</span><span class="p">;</span>
-                <span class="n">num_parser</span> <span class="o">+=</span> <span class="n">c</span>
-            <span class="n">num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num_parser</span><span class="p">)</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">num_parser</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="n">substr</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">num</span> <span class="o">+</span> <span class="n">start</span><span class="p">]</span>
-            <span class="n">reststr</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">num</span> <span class="o">+</span> <span class="n">start</span><span class="p">:]</span>
-            <span class="n">acc</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">substr</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">decodeHelper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reststr</span><span class="p">,</span> <span class="n">acc</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">decodeHelper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="p">[])</span>
-</pre></div></td></tr></tbody></table></div>
-
-</div>
+def decode(self, s: str) -&gt; List[str]:
+    def decodeHelper(self, s: str, acc: list[str]):
+        if len(s) == 0:
+            return acc
+        else:
+            num_parser = ""
+            for c in s:
+                if c == "%":
+                    break;
+                num_parser += c
+            num = int(num_parser)
+            start = len(num_parser) + 1
+            substr = s[start:num + start]
+            reststr = s[num + start:]
+            acc.append(substr)
+            return decodeHelper(self, reststr, acc)
+    return decodeHelper(self, s, [])</code></pre>
 </root>
          <div class="footer">
             <a href="https://github.com/stoneliuCS" class="footer-item">github: @stoneliuCS</a>
