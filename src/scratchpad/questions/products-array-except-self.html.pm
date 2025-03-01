@@ -22,9 +22,7 @@ def productExceptSelfHelper(self, nums: List[int], acc: List[int], idx: int):
 }
 
 ◊p{
-Okay this solution is pretty bad, its ◊em{O(n)} space complexity because I am initializing an array of zeros as one of my accumulators.
-
-In addition, I am recurring up to ◊em{n} times, and doing potentially a product of n elements.
+Alright this is an interesting solution, one that I had learned during my time taking fundamentals one at Northeastern. This next example is the more ◊em{mainstream} solution.
 }
 
 ◊code-block["language-python"]{

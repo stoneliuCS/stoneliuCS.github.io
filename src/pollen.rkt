@@ -11,6 +11,7 @@ pollen/unstable/typography)
 (require pollen/pagetree pollen/tag pollen/template pollen/core txexpr sugar/coerce)
 (require pollen/unstable/pygments)
 
+(require pollen/template sugar/coerce)
 ;; Export all defined functions.
 (provide (all-defined-out))
 

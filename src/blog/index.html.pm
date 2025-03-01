@@ -4,7 +4,7 @@
 ◊(define-meta template "../template.html.p")
 ◊(let () (current-pagetree (load-pagetree "../index.ptree")) "")
 
-◊em{Nonsensical ramblings about anything that I feel like.}
+◊em{My thoughts and views from my experiences.}
 
 ◊smaller-headline{2025}
 
