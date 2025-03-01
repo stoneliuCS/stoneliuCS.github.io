@@ -1,6 +1,5 @@
 #lang pollen
 
-◊(require pollen/unstable/pygments)
 
 ◊strong{Encode and Decode Strings}
 
@@ -16,7 +15,7 @@ An interesting edge case comes from if a possible string can be of arbitrary len
 The final solution does an accumulator approach, similar to ◊em{fundamentals one}, whether I did it properly is up for interpretation.
 }
 
-◊highlight['python]{
+◊code-block["language-python"]{
   def encode(self, strs: List[str]) -> str:
       result = ""
       for string in strs:

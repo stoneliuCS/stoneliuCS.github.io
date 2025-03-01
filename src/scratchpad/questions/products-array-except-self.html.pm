@@ -8,7 +8,6 @@ Given an integer array nums, return an array output where output[i] is the produ
 Using a recursive/accumulator based approach to the problem:
 }
 
-
 ◊code-block["language-python"]{
 def productExceptSelf(self, nums: List[int]) -> List[int]:
     return self.productExceptSelfHelper(nums, [0] * len(nums), 0)
