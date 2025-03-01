@@ -9,6 +9,7 @@ pollen/unstable/typography)
 (require pollen/tag pollen/template pollen/core txexpr sugar/coerce)
 (require
   "images.rkt")
+(require pollen/unstable/pygments)
 (provide (all-defined-out))
 (define headline (default-tag-function 'h3))
 (define smaller-headline (default-tag-function 'h5))
