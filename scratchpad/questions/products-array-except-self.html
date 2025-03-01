@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
+      <link rel="stylesheet" href="/styles.css">
+      <meta charset="UTF-8"/>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
+      <script>
+        hljs.highlightAll();
+      </script>
+   </head>
+   <body class="page">
+      <div class="container">
+         <div class="title-bar">
+            <div class="header">
+               Stone Liu
+            </div>
+            <div class="tabs">
+               <a href="/index.html" class=tab>home</a>
+               <a href="/blog" class=tab>journal</a>
+               <a href="/scratchpad" class=tab>scratchpad</a>
+               <a href="https://github.com/stoneliuCS/resume/blob/main/StoneLiu_Resume.pdf" class=tab>resume</a>
+            </div>
+         </div>
+         <hr/>
+         <root><p>Given an integer array nums, return an array output where output[i] is the product of all the elements of nums except nums[i].
+
+Using a recursive/accumulator based approach to the problem:</p>
+
+<div class="highlight"><div class="source"><table class="sourcetable"><tbody><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span></pre></div></td><td class="code"><div><pre><span></span><span class="k">def</span> <span class="nf">productExceptSelf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">productExceptSelfHelper</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">productExceptSelfHelper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nums</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">acc</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">acc</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">firstHalf</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">secondHalf</span> <span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">nums</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">nums</span><span class="p">)]</span>
+        <span class="n">num1</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">firstHalf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">firstHalf</span><span class="p">)</span>
+        <span class="n">num2</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">secondHalf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">math</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">secondHalf</span><span class="p">)</span>
+        <span class="n">acc</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">*</span> <span class="n">num2</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">productExceptSelfHelper</span><span class="p">(</span><span class="n">nums</span><span class="p">,</span> <span class="n">acc</span><span class="p">,</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div></td></tr></tbody></table></div>
+
+</div>
+
+<p>Okay this solution is pretty bad, its <em>O(n)</em> space complexity because I am initializing an array of zeros as one of my accumulators.
+
+In addition, I am recurring up to <em>n</em> times, and doing potentially a product of n elements.</p>
+</root>
+         <div class="footer">
+            <a href="https://github.com/stoneliuCS" class="footer-item">github: @stoneliuCS</a>
+            <a href="https://www.linkedin.com/in/stone-liu/" class="footer-item">linkedin: @stone-liu</a>
+            <a href="mailto: liu.sto@northeastern.edu" class="footer-item">email: liu{dot}sto{at}northeastern.edu</a>
+         </div>
+      </div>
+   </body>
+</html>
