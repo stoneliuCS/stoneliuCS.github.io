@@ -41,9 +41,7 @@ def productExceptSelfHelper(self, nums: List[int], acc: List[int], idx: int):
         acc[idx] = num1 * num2
         return self.productExceptSelfHelper(nums, acc, idx + 1)</code></pre>
 
-<p>Okay this solution is pretty bad, its <em>O(n)</em> space complexity because I am initializing an array of zeros as one of my accumulators.
-
-In addition, I am recurring up to <em>n</em> times, and doing potentially a product of n elements.</p>
+<p>Alright this is an interesting solution, one that I had learned during my time taking fundamentals one at Northeastern. This next example is the more <em>mainstream</em> solution.</p>
 
 <pre class="code-block"><code class="language-python">def productExceptSelf(self, nums: List[int]) -&gt; List[int]:
     # create a prefix array
