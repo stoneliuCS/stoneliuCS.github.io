@@ -3,7 +3,6 @@
 ◊headline{technical recollections}
 
 ◊(define-meta template "../template.html.p")
-◊(require pollen/pagetree pollen/template sugar/coerce)
 ◊(let () (current-pagetree (load-pagetree "../index.ptree")) "")
 
 ◊em{The best way to learn something is to go and do it. Doing it wrong the first time is better than doing it right the first time.}

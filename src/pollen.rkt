@@ -8,7 +8,7 @@ pollen/tag
 sugar
 txexpr
 pollen/unstable/typography)
-(require pollen/tag pollen/template pollen/core txexpr sugar/coerce)
+(require pollen/pagetree pollen/tag pollen/template pollen/core txexpr sugar/coerce)
 (require pollen/unstable/pygments)
 
 ;; Export all defined functions.
@@ -16,7 +16,7 @@ pollen/unstable/typography)
 
 ;; BEGIN: Tags/TExprs
 (define headline (default-tag-function 'h3))
-(define smaller-headline (default-tag-function 'h5))
+(define smaller-headline (default-tag-function 'h4))
 (define items (default-tag-function 'ul))
 (define item (default-tag-function 'li 'p))
 (define (link url text) `(a ((href ,url)) ,text))
