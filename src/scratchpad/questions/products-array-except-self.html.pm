@@ -26,3 +26,27 @@ Okay this solution is pretty bad, its ◊em{O(n)} space complexity because I am 
 
 In addition, I am recurring up to ◊em{n} times, and doing potentially a product of n elements.
 }
+
+◊code-block["language-python"]{
+  def productExceptSelf(self, nums: List[int]) -> List[int]:
+      # create a prefix array
+      length = len(nums)
+      result = [1] + [0] * (length - 1)
+
+      # first pass, compute the prefixes
+      for i in range(length):
+          prefix = nums[0 : i]
+          product = 1 if len(prefix) == 0 else math.prod(prefix)
+          result[i] = product
+      
+      # second pass, compute the postfixes
+      for i in range(length):
+          postfix = nums[i + 1 : length]
+          product = 1 if len(postfix) == 0 else math.prod(postfix)
+          result[i] = product * result[i]
+      return result
+}
+
+◊p{
+  This solution is much more ◊em{pythonic}, and its completely imperative, as opposed to my previous solution which was mostly functional. This was has both ◊em{O(n)} space and complexity.
+}
