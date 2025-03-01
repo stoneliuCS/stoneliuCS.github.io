@@ -15,6 +15,9 @@ pollen/unstable/typography)
 (define items (default-tag-function 'ul))
 (define item (default-tag-function 'li 'p))
 (define (link url text) `(a ((href ,url)) ,text))
-;; BEGIN: Site Variables
-(define site-title "Stone Liu")
-(define AGE "21")
+
+(define (code-block lang . text)
+  (define joined-text (apply string-append text))
+  `(pre ((class "code-block"))
+       (code ((class ,(string-append lang)))
+             ,joined-text)))
