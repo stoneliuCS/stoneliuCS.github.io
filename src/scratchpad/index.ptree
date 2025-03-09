@@ -1,9 +1,11 @@
 #lang pollen
 
 ◊(require (prefix-in questions: "questions/index.ptree"))
+◊(require (prefix-in compiler: "compiler/index.ptree"))
 
 scratchpad/index.html 
 scratchpad/leetcode.html
 scratchpad/compiler.html
 
 ◊questions:doc
+◊compiler:doc
