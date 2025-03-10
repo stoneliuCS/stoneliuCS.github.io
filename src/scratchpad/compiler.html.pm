@@ -9,5 +9,5 @@
 ◊smaller-headline{Chapter 1}
 
 ◊items{
-  ◊item{◊link["/scratchpad/compiler/starting.html"]{StoneScript}}
+  ◊item{◊link["/scratchpad/compiler/starting.html"]{the lexer}}
 }
