@@ -36,7 +36,7 @@ compiler: String -&gt; String
   ...
 )</code></pre>
 
-<p>Some popular compilers today include <em>gcc, clang, javac, and go</em>.</p>
+<p>Some popular compilers today include <em>gcc, clang, javac, and go</em>. I've decided to write the project in <em>C</em> even though I know little to nothing about it.</p>
 
 <p>Lets try a warm up since my C skills are quite awful. Lets try writing a doubly linked list to get comfortable with pointers in C.
 
@@ -64,7 +64,7 @@ void delete_node(LinkedListNode* list, const int idx);
 // Returns the length of that linked list.
 int list_length(LinkedListNode* list);</code></pre>
 
-Lets start with these simple implementations for the header file.
+Lets start with one of these simple implementations from the header file.
 <pre class="code-block"><code class="c">void insert_node(LinkedListNode* list, LinkedListNode* node) {
   assert(list != NULL);
   assert(node != NULL);
@@ -76,34 +76,13 @@ Lets start with these simple implementations for the header file.
   }
   current-&gt;next = node;
   node-&gt;previous = current;
-}
-
-
-LinkedListNode* find_node(LinkedListNode* list, const int idx) {
-  assert(list != NULL);
-
-  int length = list_length(list);
-  int counter = 0;
-
-  LinkedListNode* current = list;
-
-  while (current-&gt;next != NULL &amp;&amp; counter &lt; idx) {
-    current = current-&gt;next;
-    counter = counter + 1;
-  }
-  return current;
-}
-
-int list_length(LinkedListNode *list) {
-  assert(list != NULL);
-  LinkedListNode* current = list;
-  int len = 1; // To account for the fact that LinkedListNode is already a node.
-  while (current-&gt;next != NULL) {
-    current = current-&gt;next;
-    len = len + 1;
-  }
-  return len;
 }</code></pre></p>
+
+<p>An odd thing one might ask is why the usage of <em>assert</em> in the source code? Asserts are typically for test cases.
+
+That is true, test cases utilize asserts to validate assumptions of written code with expected and actual outputs.
+
+But asserts are also great for programming <em>invariants</em> in your code. Meaning everything that comes after the assert line will do so knowing that whatever that was asserted beforehand is true.</p>
 
 <p>For now, lets try to translate this program written in an imaginary programming language called <em>StoneScript</em> (Creative am I right?)
 
