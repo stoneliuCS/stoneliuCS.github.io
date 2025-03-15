@@ -17,7 +17,7 @@
 }
 
 ◊p{
-  Some popular compilers today include ◊em{gcc, clang, javac, and go}.
+  Some popular compilers today include ◊em{gcc, clang, javac, and go}. I've decided to write the project in ◊em{C} even though I know little to nothing about it.
 }
 
 ◊p{
@@ -51,7 +51,7 @@
     int list_length(LinkedListNode* list);
   }
 
-  Lets start with these simple implementations for the header file.
+  Lets start with one of these simple implementations from the header file.
   ◊code-block["c"]{
     void insert_node(LinkedListNode* list, LinkedListNode* node) {
       assert(list != NULL);
@@ -65,34 +65,15 @@
       current->next = node;
       node->previous = current;
     }
-
-
-    LinkedListNode* find_node(LinkedListNode* list, const int idx) {
-      assert(list != NULL);
-
-      int length = list_length(list);
-      int counter = 0;
-
-      LinkedListNode* current = list; 
-
-      while (current->next != NULL && counter < idx) {
-        current = current->next;
-        counter = counter + 1;
-      }
-      return current;
-    }
-
-    int list_length(LinkedListNode *list) {
-      assert(list != NULL);
-      LinkedListNode* current = list;
-      int len = 1; // To account for the fact that LinkedListNode is already a node.
-      while (current->next != NULL) {
-        current = current->next;
-        len = len + 1;
-      }
-      return len;
-    }
   }
+}
+
+◊p{
+  An odd thing one might ask is why the usage of ◊em{assert} in the source code? Asserts are typically for test cases.
+
+  That is true, test cases utilize asserts to validate assumptions of written code with expected and actual outputs.
+
+  But asserts are also great for programming ◊em{invariants} in your code. Meaning everything that comes after the assert line will do so knowing that whatever that was asserted beforehand is true.
 }
 
 ◊p{
