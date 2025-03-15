@@ -9,5 +9,5 @@
 
 ◊items{
   ◊item{◊link["/scratchpad/leetcode.html"]{leetcode}}
-  ◊item{◊link["/scratchpad/compiler.html"]{writing a crappy compiler}}
+  ◊item{◊link["/scratchpad/interpreter.html"]{writing a crappy interpreter}}
 }
