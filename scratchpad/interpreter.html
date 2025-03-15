@@ -24,36 +24,13 @@
             </div>
          </div>
          <hr/>
-         <root><h3>Learning about the compiler.</h3>
+         <root><h3>Writing an Interpreter.</h3>
 
-<p>From my understanding a compiler is just a <em>very, very, very</em> sophisticated function.
+<p>A link to the current github project is provided <a href="https://github.com/stoneliuCS/compiler/tree/main">here</a>.</p>
 
-In essence it takes source code, and translates that into a <em>semantically</em> equivalent form in the target language.</p>
+<h4>Chapter 1</h4>
 
-<pre class="code-block"><code class="racket">;; The signature of a example compiler function in ISL.
-compiler: String -&gt; String
-(define (compiler source)
-  ...
-)</code></pre>
-
-<p>Some popular compilers today include <em>gcc, clang, javac, and go</em>.
-
-So lets try writing my own, in <em>C</em>.
-
-The first stage is <a href="https://en.wikipedia.org/wiki/Lexical_analysis">lexical analysis</a>, essentially I need to write a program that can read in a source file and tokenize it. <em>(I won't worry about preprocessing and other fancy stuff right now.)</em></p>
-
-<pre class="code-block"><code class="c">// Reading from a source file in c.
-printf("Compiling...\n");
-const char* filePath = argv[1];
-char* fileContents = readFile(filePath);</code></pre>
-
-<p>For now, lets try to translate this program written in an imaginary programming language called <em>StoneScript</em> (Creative am I right?)
-
-In my language, I prefer the arrow syntax to better communicate assignment statements.</p>
-
-<pre class="code-block"><code class="">integer x &lt;- 2;
-integer y &lt;- 2;
-integer z &lt;- x + y;</code></pre>
+<ul><li><p><a href="/scratchpad/interpreter/starting.html">a warmup</a></p></li></ul>
 </root>
          <div class="footer">
             <a href="https://github.com/stoneliuCS" class="footer-item">github: @stoneliuCS</a>

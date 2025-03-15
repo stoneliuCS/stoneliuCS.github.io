@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/default.min.css">
+      <link rel="stylesheet" href="/styles.css">
+      <meta charset="UTF-8"/>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/languages/python.min.js"></script>
+      <script>
+        hljs.highlightAll();
+      </script>
+   </head>
+   <body class="page">
+      <div class="container">
+         <div class="title-bar">
+            <div class="header">
+               Stone Liu
+            </div>
+            <div class="tabs">
+               <a href="/index.html" class=tab>home</a>
+               <a href="/blog" class=tab>journal</a>
+               <a href="/scratchpad" class=tab>scratchpad</a>
+               <a href="https://github.com/stoneliuCS/resume/blob/main/StoneLiu_Resume.pdf" class=tab>resume</a>
+            </div>
+         </div>
+         <hr/>
+         <root><h3>Learning about compilers and interpreters.</h3>
+
+<p>From my understanding a compiler is just a <em>very, very, very</em> sophisticated function.
+
+In essence it takes source code, and translates that into a <em>semantically</em> equivalent form in the target language.</p>
+
+<pre class="code-block"><code class="racket">;; The signature of a example compiler function in ISL.
+compiler: String -&gt; String
+(define (compiler source)
+  ...
+)</code></pre>
+
+<p>Some popular compilers today include <em>gcc, clang, javac, and go</em>.</p>
+
+<p>Lets try a warm up since my C skills are quite awful. Lets try writing a doubly linked list to get comfortable with pointers in C.
+
+Lets start with this definition of a linked list node with strings.
+<pre class="code-block"><code class="c">// A LinkedListNode is a
+// struct LinkedListNode { LinkedListNode, LinkedListNode, char* }
+// Interpretation, LinkedListNode contains pointers to both the previous and next.
+typedef struct LinkedListNode {
+  struct LinkedListNode* previous;
+  struct LinkedListNode* next;
+  const char* val;
+} LinkedListNode;</code></pre>
+
+It should support the following operations:
+<pre class="code-block"><code class="c">// Inserts the node at the back of the list.
+// Mutates the underlying list to point the last node to the given node.
+void insert_node(LinkedListNode* list, LinkedListNode* node);
+
+// Finds the node at the given index in the list.
+void find_node(LinkedListNode* list, const int idx);
+
+// Deletes the node at the given index in the list.
+void delete_node(LinkedListNode* list, const int idx);</code></pre></p>
+
+<p>For now, lets try to translate this program written in an imaginary programming language called <em>StoneScript</em> (Creative am I right?)
+
+In my language, I prefer the arrow syntax to better communicate assignment statements.</p>
+
+<pre class="code-block"><code class="">integer x &lt;- 2;
+integer y &lt;- 2;
+integer z &lt;- x + y;</code></pre>
+</root>
+         <div class="footer">
+            <a href="https://github.com/stoneliuCS" class="footer-item">github: @stoneliuCS</a>
+            <a href="https://www.linkedin.com/in/stone-liu/" class="footer-item">linkedin: @stone-liu</a>
+            <a href="mailto: liu.sto@northeastern.edu" class="footer-item">email: liu{dot}sto{at}northeastern.edu</a>
+         </div>
+      </div>
+   </body>
+</html>
