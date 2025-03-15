@@ -55,11 +55,55 @@ It should support the following operations:
 // Mutates the underlying list to point the last node to the given node.
 void insert_node(LinkedListNode* list, LinkedListNode* node);
 
-// Finds the node at the given index in the list.
-void find_node(LinkedListNode* list, const int idx);
+// Finds the node at the given index (zero-indexed) in the list.
+LinkedListNode* find_node(LinkedListNode* list, const int idx);
 
-// Deletes the node at the given index in the list.
-void delete_node(LinkedListNode* list, const int idx);</code></pre></p>
+// Deletes the node at the given (zero-indexed) index in the list.
+void delete_node(LinkedListNode* list, const int idx);
+
+// Returns the length of that linked list.
+int list_length(LinkedListNode* list);</code></pre>
+
+Lets start with these simple implementations for the header file.
+<pre class="code-block"><code class="c">void insert_node(LinkedListNode* list, LinkedListNode* node) {
+  assert(list != NULL);
+  assert(node != NULL);
+  LinkedListNode* current = list;
+
+  // Traverse the linked list until it reaches the end.
+  while (current-&gt;next != NULL) {
+    current = current-&gt;next;
+  }
+  current-&gt;next = node;
+  node-&gt;previous = current;
+}
+
+
+LinkedListNode* find_node(LinkedListNode* list, const int idx) {
+  assert(list != NULL);
+
+  int length = list_length(list);
+  int counter = 0;
+
+  LinkedListNode* current = list;
+
+  while (current-&gt;next != NULL &amp;&amp; counter &lt; idx) {
+    current = current-&gt;next;
+    counter = counter + 1;
+  }
+  return current;
+}
+
+int list_length(LinkedListNode *list) {
+  assert(list != NULL);
+  LinkedListNode* current = list;
+  int len = 1; // To account for the fact that LinkedListNode is already a node.
+  while (current-&gt;next != NULL) {
+    current = current-&gt;next;
+    len = len + 1;
+  }
+  return len;
+}</code></pre></p>
 
 <p>For now, lets try to translate this program written in an imaginary programming language called <em>StoneScript</em> (Creative am I right?)
 
