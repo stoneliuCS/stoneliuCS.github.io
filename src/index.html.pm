@@ -14,9 +14,9 @@ Don’t you agree?"}
 ◊strong{currently I am}
 
 ◊items{
-  ◊item{ Co-oping at ◊link["https://www.morsecorp.com"]{Morse} as a fullstack software engineer primarily focusing in backend pipeline automations. }
+  ◊item{ Co-oping at ◊link["https://www.morsecorp.com"]{Morse} as a software engineer building infrastructure to test and evaluate ◊link["https://en.wikipedia.org/wiki/Computer_vision"]{CV} models. }
   ◊item{ Building ◊link["https://dearly-35496165508.us-east1.run.app/"]{dearly}, a platform to connect with your friends and family in a more meaningful way. }
-  ◊item{ Learning ◊link["https://github.com/stoneliuCS/dotfiles"]{Vim}, preparing for my first half marathon, and exploring new music! }
+  ◊item{ Learning ◊link["https://github.com/stoneliuCS/dotfiles"]{Vim}, running, and listening to new music! }
 }
 
 ◊div[#:style "display: flex; justify-content: center; width: 100%;"]{

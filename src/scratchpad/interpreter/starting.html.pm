@@ -41,11 +41,57 @@
     // Mutates the underlying list to point the last node to the given node.
     void insert_node(LinkedListNode* list, LinkedListNode* node);
 
-    // Finds the node at the given index in the list.
-    void find_node(LinkedListNode* list, const int idx);
+    // Finds the node at the given index (zero-indexed) in the list.
+    LinkedListNode* find_node(LinkedListNode* list, const int idx);
 
-    // Deletes the node at the given index in the list.
+    // Deletes the node at the given (zero-indexed) index in the list.
     void delete_node(LinkedListNode* list, const int idx);
+
+    // Returns the length of that linked list.
+    int list_length(LinkedListNode* list);
+  }
+
+  Lets start with these simple implementations for the header file.
+  ◊code-block["c"]{
+    void insert_node(LinkedListNode* list, LinkedListNode* node) {
+      assert(list != NULL);
+      assert(node != NULL);
+      LinkedListNode* current = list;
+
+      // Traverse the linked list until it reaches the end.
+      while (current->next != NULL) {
+        current = current->next;
+      }
+      current->next = node;
+      node->previous = current;
+    }
+
+
+    LinkedListNode* find_node(LinkedListNode* list, const int idx) {
+      assert(list != NULL);
+
+      int length = list_length(list);
+      int counter = 0;
+
+      LinkedListNode* current = list; 
+
+      while (current->next != NULL && counter < idx) {
+        current = current->next;
+        counter = counter + 1;
+      }
+      return current;
+    }
+
+    int list_length(LinkedListNode *list) {
+      assert(list != NULL);
+      LinkedListNode* current = list;
+      int len = 1; // To account for the fact that LinkedListNode is already a node.
+      while (current->next != NULL) {
+        current = current->next;
+        len = len + 1;
+      }
+      return len;
+    }
   }
 }
 
