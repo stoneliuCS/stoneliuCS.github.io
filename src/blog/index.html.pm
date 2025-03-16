@@ -9,5 +9,6 @@
 ◊smaller-headline{2025}
 
 ◊items{
-  ◊item{◊link["/blog/cs4500.html"]{02/19 - Reflecting on Software Development}}
+  ◊item{◊link["/blog/cs4500.html"]{02/19 - reflecting on software development}}
+  ◊item{◊link["/blog/designs.html"]{03/16 - my takes on designing software}}
 }
