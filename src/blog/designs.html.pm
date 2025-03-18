@@ -2,7 +2,7 @@
 
 ◊headline{learning systematic program design}
 
-◊smaller-headline{1. The foundational building blocks}
+◊smaller-headline{1. the foundational building blocks}
 
 ◊p{
   When designing programs, at the most foundational level there needs to be some real-world problem that needs to be translated into the proper ◊em{data definitons}.
@@ -29,9 +29,9 @@
 
   Functions on the other hand can be either ◊em{atomic} or ◊em{composite}, ◊em{pure} or ◊em{imperative}. Atomic functions are a little subjective, but usually atomic functions do typically one thing, and their purpose indicates so. Composite functions compose other functions, by keeping these definitions in mind, the structure of the code abstracts away layers of complexities such that any reader can understand at a very high level what a piece of software is doing.
 
-  Pure functions, in my opinion are beautiful. It means that for every single input to some function ◊em{f}, the resulting output is always the same. There is no ◊em{state}. This way of programming makes it incredibly clear the ◊em{invariants} of a software system. Unlike imperative functions which do have some internal state, the temporal chain of method calls could result in different outputs for the same input.
+  Pure functions, in my opinion are beautiful. It means that for every single input to some function ◊em{f}, the resulting output is always the same. There is no ◊em{state}. This way of programming makes it incredibly clear the ◊em{invariants} of a software system. Unlike imperative functions which do have some internal state, the temporal chain of function calls could result in different outputs for the same input.
 
-  Mutation and aliasing are some of the most difficult parts of programming. Indeed mutable data will allow for some of the strangest software bugs one might encounter. However they are also necessary in most complex software systems. For example, something as simple as one's first program, printing a message to a console or terminal is ◊em{impure}. Mutability allows modification of the internal workings of a piece of software. For objects, this could mean setting an internal property to a different one than it started with. Aliasing refers to distinct names referring to the same object. This is a common source of bugs in OOP, as modifications to one object in a piece of software may result in changes else where in the code.
+  Mutation and aliasing are some of the most difficult parts of programming. Indeed mutable data will allow for some of the strangest software bugs one might encounter. However they are also necessary in most complex software systems. For example, something as simple as one's first program, printing a message to a terminal is ◊em{impure}. Mutability allows modification of the internal workings of a piece of software. For objects, this could mean setting an internal property to a different one than it started with. Aliasing happens when distinct names refer to the same object. This is a common source of bugs in OOP, as modifications to one object in a piece of software may result in changes else where in the code.
 }
 
 ◊em{Designing reliable software at scale is a monumental challenge. One must approach all software systems with equal appreciation and awe of the complexities that run our modern world.}
