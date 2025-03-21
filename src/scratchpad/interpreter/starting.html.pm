@@ -37,33 +37,57 @@
 
   It should support the following operations:
   ◊code-block["c"]{
-    // Inserts the node at the back of the list.
-    // Mutates the underlying list to point the last node to the given node.
-    void insert_node(LinkedListNode* list, LinkedListNode* node);
+    // Creates a LinkedListNode pointer in memory. Callers must be responsible for freeing it.
+    LinkedListNode* create_node(LinkedListNode* previous, LinkedListNode* next, const char* val);
+
+    // Frees the LinkedListNode.
+    void free_node(LinkedListNode* head);
+
+    // Inserts the node to the desired zero-indexed position. Returns the head of the new list.
+    // The node will always be inserted behind the current index of the node in the original linked list.
+    LinkedListNode* insert_node_at_idx(LinkedListNode* head, LinkedListNode* node, const int idx);
 
     // Finds the node at the given index (zero-indexed) in the list.
-    LinkedListNode* find_node(LinkedListNode* list, const int idx);
+    LinkedListNode* find_node_at_idx(LinkedListNode* head, const int idx);
 
     // Deletes the node at the given (zero-indexed) index in the list.
-    void delete_node(LinkedListNode* list, const int idx);
+    // Returns the head of the new list.
+    LinkedListNode* delete_node_at_idx(LinkedListNode* head, const int idx);
 
-    // Returns the length of that linked list.
-    int list_length(LinkedListNode* list);
+    // Pretty Prints the linked list head.
+    void pretty_print_node(LinkedListNode* head);
   }
 
   Lets start with one of these simple implementations from the header file.
   ◊code-block["c"]{
-    void insert_node(LinkedListNode* list, LinkedListNode* node) {
-      assert(list != NULL);
-      assert(node != NULL);
-      LinkedListNode* current = list;
-
-      // Traverse the linked list until it reaches the end.
-      while (current->next != NULL) {
+    static LinkedListNode *insert_node_at_idx_impl(LinkedListNode *head,
+                                                  LinkedListNode *node,
+                                                  const int idx) {
+      int counter = 0;
+      LinkedListNode *current = head;
+      while (current->next != NULL && counter < idx) {
         current = current->next;
+        counter = counter + 1;
       }
-      current->next = node;
-      node->previous = current;
+      assert(current != NULL);
+      // We always insert the node to be before the current.
+      if (current->previous != NULL) {
+        current->previous->next = node;
+        node->previous = current->previous;
+      }
+      node->next = current;
+      current->previous = node;
+      return walk_back(current);
+    }
+
+    LinkedListNode *insert_node_at_idx(LinkedListNode *head, LinkedListNode *node,
+                                      const int idx) {
+      assert(head != NULL && "Head pointer cannot be null.");
+      assert(node != NULL && "Node to be inserted cannot be null.");
+      assert(idx < get_length_node(head) &&
+            "Cannot insert a node if the idx is greater the"
+            "length of the list.");
+      return insert_node_at_idx_impl(head, node, idx);
     }
   }
 }
