@@ -49,7 +49,6 @@ var z &lt;- x + y;</code></pre>
 <p>Lets break down at the highest level where to start. Every compiler/interpreter relies on a <em>frontend</em>. This is what parses the source code into a more easily managable data structure called <em>tokens</em>.
 
 At this rate, I forsee at the top level of my lexer doing this:
-
 <pre class="code-block"><code class="c">token_list *tokenize(const char *source) {
   token_ctx ctx = ...
   while (!is_end(ctx)) {
@@ -57,7 +56,24 @@ At this rate, I forsee at the top level of my lexer doing this:
     scan_token(ctx);
   }
   return tokens;
-}</code></pre></p>
+}</code></pre>
+What is a <em>token_ctx</em> you might ask? Good question, since C doesn't really support object oriented programming, I need to have a struct which contains all the necessary information for all my helper functions throughout parsing.
+<pre class="code-block"><code class="c">// A Token Context is Structured Data
+// It holds
+// A starting index
+// A Current index
+// The current line number
+// The current source program.
+// The current running list of tokens.
+// A flag to see if the source program has errors.
+typedef struct token_ctx {
+  int start;
+  int current;
+  int line;
+  const char *source;
+  token_list_t *tokens;
+  bool error;
+} token_ctx;</code></pre></p>
 
 </root>
          <div class="footer">
