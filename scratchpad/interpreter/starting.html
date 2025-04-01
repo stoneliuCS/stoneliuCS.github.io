@@ -32,49 +32,12 @@ In essence it takes source code, and translates that into a <em>semantically</em
 
 The compiler usually outputs an executable in machine code. This greatly varies depending on computer architectures. Compilers that compile to another high level programming language is called a transpiler.</p>
 
-<pre class="code-block"><code class="racket">;; The signature of a example compiler function in ISL.
-compiler: String -&gt; String
-(define (compiler source)
-  ...
-)</code></pre>
+<pre class="code-block"><code class="racket">;; compiler: String -&gt; String
+(define (compiler source) ...)</code></pre>
 
-<p>For now, lets try to translate this program written in an imaginary programming language called <em>StoneScript</em> (Creative am I right?)
+<p>But where do you start from a behemoth as sophisticated as a <em>compiler</em>? Lets start with the basics, defining the very foundation of our programming language, our <em>grammar</em>.
 
-In my language, I prefer the arrow syntax to better communicate assignment statements.</p>
-
-<pre class="code-block"><code class="">var x &lt;- 2;
-var y &lt;- 2;
-var z &lt;- x + y;</code></pre>
-
-<p>Lets break down at the highest level where to start. Every compiler/interpreter relies on a <em>frontend</em>. This is what parses the source code into a more easily managable data structure called <em>tokens</em>.
-
-At this rate, I forsee at the top level of my lexer doing this:
-<pre class="code-block"><code class="c">token_list *tokenize(const char *source) {
-  token_ctx ctx = ...
-  while (!is_end(ctx)) {
-    ...
-    scan_token(ctx);
-  }
-  return tokens;
-}</code></pre>
-What is a <em>token_ctx</em> you might ask? Good question, since C doesn't really support object oriented programming, I need to have a struct which contains all the necessary information for all my helper functions throughout parsing.
-<pre class="code-block"><code class="c">// A Token Context is Structured Data
-// It holds
-// A starting index
-// A Current index
-// The current line number
-// The current source program.
-// The current running list of tokens.
-// A flag to see if the source program has errors.
-typedef struct token_ctx {
-  int start;
-  int current;
-  int line;
-  const char *source;
-  token_list_t *tokens;
-  bool error;
-} token_ctx;</code></pre></p>
-
+Lets write an incredibly simple programming language, one that is essentially an arithmetic calculator supporting 4 basic operations, addition, subtraction, multiplication, and division.</p>
 </root>
          <div class="footer">
             <a href="https://github.com/stoneliuCS" class="footer-item">github: {at}stoneliuCS</a>
