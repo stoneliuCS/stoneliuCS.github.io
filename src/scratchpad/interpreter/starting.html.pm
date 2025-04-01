@@ -11,57 +11,12 @@
 }
 
 ◊code-block["racket"]{
-  ;; The signature of a example compiler function in ISL.
-  compiler: String -> String
-  (define (compiler source)
-    ...
-  )
+  ;; compiler: String -> String
+  (define (compiler source) ...)
 }
 
 ◊p{
-  For now, lets try to translate this program written in an imaginary programming language called ◊em{StoneScript} (Creative am I right?)
+  But where do you start from a behemoth as sophisticated as a ◊em{compiler}? Lets start with the basics, defining the very foundation of our programming language, our ◊em{grammar}.
 
-  In my language, I prefer the arrow syntax to better communicate assignment statements.
+  Lets write an incredibly simple programming language, one that is essentially an arithmetic calculator supporting 4 basic operations, addition, subtraction, multiplication, and division.
 }
-
-◊code-block[""]{
-  var x <- 2;
-  var y <- 2;
-  var z <- x + y;
-}
-
-◊p{
-  Lets break down at the highest level where to start. Every compiler/interpreter relies on a ◊em{frontend}. This is what parses the source code into a more easily managable data structure called ◊em{tokens}.
-
-  At this rate, I forsee at the top level of my lexer doing this:
-  ◊code-block["c"]{
-    token_list *tokenize(const char *source) {
-      token_ctx ctx = ...
-      while (!is_end(ctx)) {
-        ...
-        scan_token(ctx);
-      }
-      return tokens;
-    }
-  }
-  What is a ◊em{token_ctx} you might ask? Good question, since C doesn't really support object oriented programming, I need to have a struct which contains all the necessary information for all my helper functions throughout parsing.
-  ◊code-block["c"]{
-    // A Token Context is Structured Data
-    // It holds
-    // A starting index
-    // A Current index
-    // The current line number
-    // The current source program.
-    // The current running list of tokens.
-    // A flag to see if the source program has errors.
-    typedef struct token_ctx {
-      int start;
-      int current;
-      int line;
-      const char *source;
-      token_list_t *tokens;
-      bool error;
-    } token_ctx;
-  }
-}
-
