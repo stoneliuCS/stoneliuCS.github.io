@@ -4,7 +4,6 @@
 ◊(require (prefix-in interpreter: "interpreter/index.ptree"))
 
 scratchpad/index.html 
-scratchpad/leetcode.html
 scratchpad/interpreter.html
 
 ◊questions:doc
