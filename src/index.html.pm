@@ -15,7 +15,7 @@ Don’t you agree?"}
 
 ◊items{
   ◊item{ Co-oping at ◊link["https://www.morsecorp.com"]{Morse} as a software engineer building infrastructure to test and evaluate ◊link["https://en.wikipedia.org/wiki/Computer_vision"]{CV} models. }
-  ◊item{ Building ◊link["https://dearly-35496165508.us-east1.run.app/"]{dearly}, a platform to connect with your friends and family in a more meaningful way. }
+  ◊item{ Building ◊link["https://github.com/stoneliuCS/fluid-oas"]{fluid-oas}, Declaratively build type-safe HTTP APIs in TypeScript through the OpenAPI specification. }
   ◊item{ Learning ◊link["https://github.com/stoneliuCS/dotfiles"]{Vim}, running, and listening to new music! }
 }
 
