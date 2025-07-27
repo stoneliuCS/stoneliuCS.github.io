@@ -14,9 +14,7 @@ Don’t you agree?"}
 ◊strong{currently I am}
 
 ◊items{
-  ◊item{ Co-oping at ◊link["https://www.morsecorp.com"]{Morse} as a software engineer building infrastructure to test and evaluate ◊link["https://en.wikipedia.org/wiki/Computer_vision"]{CV} models. }
-  ◊item{ Building ◊link["https://github.com/stoneliuCS/fluid-oas"]{fluid-oas}, Declaratively build type-safe HTTP APIs in TypeScript through the OpenAPI specification. }
-  ◊item{ Learning ◊link["https://github.com/stoneliuCS/dotfiles"]{Vim}, running, and listening to new music! }
+  ◊item{ Chief of Software for ◊link["https://generatenu.com"]{Generate Product Development}, Northeastern's premier product development club. }
 }
 
 ◊div[#:style "display: flex; justify-content: center; width: 100%;"]{
