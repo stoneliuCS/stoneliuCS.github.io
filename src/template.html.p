@@ -19,7 +19,6 @@
             <div class="tabs">
                <a href="/index.html" class=tab>home</a> 
                <a href="/blog" class=tab>thoughts</a> 
-               <a href="/scratchpad" class=tab>scratchpad</a> 
                <a href="https://github.com/stoneliuCS/resume/blob/main/StoneLiu_Resume.pdf" class=tab>resume</a>
             </div>
          </div>

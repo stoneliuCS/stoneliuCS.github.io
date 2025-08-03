@@ -11,7 +11,7 @@ Don’t you agree?"}
 
 ◊br[]◊br[]
 
-◊strong{currently I am}
+◊strong{currently I am,}
 
 ◊items{
   ◊item{ Chief of Software for ◊link["https://generatenu.com"]{Generate Product Development}, Northeastern's premier product development club. }

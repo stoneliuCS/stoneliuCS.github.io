@@ -1,8 +1,6 @@
 #lang pollen
 ◊(require (prefix-in blog: "blog/index.ptree"))
-◊(require (prefix-in scratchpad: "scratchpad/index.ptree"))
 
 index.html
 
 ◊blog:doc
-◊scratchpad:doc

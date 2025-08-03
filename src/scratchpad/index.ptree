@@ -1,7 +1,0 @@
-#lang pollen
-
-◊(require (prefix-in questions: "questions/index.ptree"))
-
-scratchpad/index.html 
-
-◊questions:doc

@@ -10,4 +10,5 @@
 
 ◊items{
   ◊item{◊link["/blog/designs.html"]{03/16 - my takes on designing software}}
+  ◊item{◊link["/blog/leadership.html"]{08/03 - on leadership and people}}
 }
