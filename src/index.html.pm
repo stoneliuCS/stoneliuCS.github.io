@@ -15,6 +15,7 @@ Don’t you agree?"}
 
 ◊items{
   ◊item{ Chief of Software for ◊link["https://generatenu.com"]{Generate Product Development}, Northeastern's premier product development club. }
+  ◊item{ Joining an exciting startup this next spring! Can't wait to learn and build from some of the most amazing people I have ever met. }
 }
 
 ◊div[#:style "display: flex; justify-content: center; width: 100%;"]{
