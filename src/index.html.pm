@@ -21,3 +21,11 @@ Don’t you agree?"}
 ◊div[#:style "display: flex; justify-content: center; width: 100%;"]{
   ◊image["me.jpg" #:width "75%"]
 }
+◊br[]
+
+◊strong{currently I am reading,}
+
+◊items{
+  ◊item{◊link["https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://unidel.edu.ng/focelibrary/books/Designing%2520Data-Intensive%2520Applications%2520The%2520Big%2520Ideas%2520Behind%2520Reliable,%2520Scalable,%2520and%2520Maintainable%2520Systems%2520by%2520Martin%2520Kleppmann%2520(z-lib.org).pdf&ved=2ahUKEwjm4oeCh7mPAxVTGlkFHXloB94QFnoECAwQAQ&usg=AOvVaw3JEJEe3RWHBO01TVS4ee7b"]{ Designing Data Intensive Applications } }
+  ◊item{◊link["https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://en.wikipedia.org/wiki/Dune_(novel)&ved=2ahUKEwj8m_WTh7mPAxW0GVkFHc69OJwQFnoFCIMBEAE&usg=AOvVaw3LO4WsRiJEBYDhnhM2ldKI"]{ Dune }}
+}
