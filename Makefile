@@ -1,7 +1,7 @@
 all: serve 
 
 build:
-	jekyll build
+	cd src && jekyll build
 
 serve:
-	jekyll serve
+	cd src && bundle install && jekyll serve
