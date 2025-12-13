@@ -16,6 +16,27 @@ body {
 .underlined { text-decoration: underline; }
 
 .small-image {
+  max-width: 500px;
+  height: auto;
+}
+
+.medium-image {
   max-width: 800px;
   height: auto;
 }
+
+.image-with-caption {
+    text-align: center;
+    margin: 24px auto;
+  }
+
+  .image-with-caption img {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .image-with-caption figcaption {
+    margin-top: 8px;
+    font-size: 0.95em;
+    color: #666;
+  }
