@@ -1,2 +1,3 @@
 _site
-.jekyll-cache
+.DS_Store
+typst/__build_wrapper__.typ
