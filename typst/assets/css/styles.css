@@ -121,6 +121,7 @@ ul.toc strong { font-style: italic; font-weight: 600; }
 }
 .math-block svg.typst-frame {
   max-width: 100%;
-  height: auto;
+  height: auto !important; /* override the SVG's inline height so wide figures
+                              scale down proportionally instead of overflowing */
   vertical-align: middle;
 }
