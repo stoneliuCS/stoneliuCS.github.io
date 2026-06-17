@@ -14,6 +14,7 @@
 #let nav-items = (
   (name: "stone", link: "/"),
   (name: "thoughts", link: "/thoughts.html"),
+  (name: "notes", link: "/notes.html"),
 )
 
 #let nav(current) = html.elem("nav", nav-items.map(item => {
@@ -73,39 +74,50 @@
   )
 }
 
-// The Thoughts topic index, generated from pages.json. Posts with a "topic"
-// nest under that heading; the rest are listed as standalone articles.
+#let _has-topic(p) = "topic" in p
+
+#let _link-item(p) = html.elem(
+  "li",
+  html.elem("a", attrs: (href: p.url))[#p.title - #p.date_list],
+)
+
+// The Thoughts index: standalone takes — posts that carry no "topic".
 #let web-thoughts() = {
   let posts = json("/pages.json").posts
-  let has-topic(p) = "topic" in p
+
+  nav(_input("current"))
+  html.elem("h1", attrs: (class: "underlined"))[Thoughts]
+  html.elem("ul", attrs: (class: "toc"), {
+    for p in posts.filter(p => not _has-topic(p)) {
+      _link-item(p)
+    }
+  })
+}
+
+// The Notes index: topic-grouped notes (e.g. Deep Learning, Professional).
+// Every post that carries a "topic" nests under that heading.
+#let web-notes() = {
+  let posts = json("/pages.json").posts
 
   let topic-names = ()
   for p in posts {
-    if has-topic(p) and not topic-names.contains(p.topic) {
+    if _has-topic(p) and not topic-names.contains(p.topic) {
       topic-names.push(p.topic)
     }
   }
 
-  let link-item(p) = html.elem(
-    "li",
-    html.elem("a", attrs: (href: p.url))[#p.title - #p.date_list],
-  )
-
   nav(_input("current"))
-  html.elem("h1", attrs: (class: "underlined"))[Thoughts]
+  html.elem("h1", attrs: (class: "underlined"))[Notes]
   html.elem("ul", attrs: (class: "toc"), {
     for t in topic-names {
       html.elem("li", {
         html.elem("strong")[#t]
         html.elem("ul", {
-          for p in posts.filter(p => has-topic(p) and p.topic == t) {
-            link-item(p)
+          for p in posts.filter(p => _has-topic(p) and p.topic == t) {
+            _link-item(p)
           }
         })
       })
-    }
-    for p in posts.filter(p => not has-topic(p)) {
-      link-item(p)
     }
   })
 }

@@ -103,13 +103,21 @@ def build() -> None:
         emit(pg["out"], html, pg["title"])
         print(f"  {pg['src']} -> _site/{pg['out']}")
 
-    # Thoughts index — generated entirely from the manifest.
+    # Thoughts index (standalone takes) — generated from the manifest.
     html = compile_wrapper(
         '#import "/lib/web.typ": web-thoughts\n#web-thoughts()\n',
         {"current": "/thoughts.html"},
     )
     emit("thoughts.html", html, "thoughts")
     print("  (generated) -> _site/thoughts.html")
+
+    # Notes index (topic-grouped) — generated from the manifest.
+    html = compile_wrapper(
+        '#import "/lib/web.typ": web-notes\n#web-notes()\n',
+        {"current": "/notes.html"},
+    )
+    emit("notes.html", html, "notes")
+    print("  (generated) -> _site/notes.html")
 
     # Articles.
     for p in manifest["posts"]:
