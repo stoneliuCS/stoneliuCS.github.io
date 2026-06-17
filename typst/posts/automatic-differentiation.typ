@@ -1,5 +1,12 @@
 #import "@preview/diagraph:0.3.7"
 
+#metadata((
+  title: "Automatic Differentiation",
+  date: "2026-06-16",
+  section: "notes",
+  topic: "Deep Learning",
+)) <post-meta>
+
 == The Chain Rule
 
 Recall that the definition of the derivative of a function $f$ at a given input $x$ is
@@ -121,7 +128,10 @@ If we differentiate with respect to $n_2$ then we just have to swap our seed val
       dn7 = n5 * dn6 + n6 * dn5
 
       vector.append(dn7)
-      return n7, np.array(vector) # return the output of f aswell as the gradient.
+      # return the output of f aswell as the gradient.
+      return n7, np.array(vector)
 ```
 
 So really _forward autodifferentiation_ is just a way to reuse past computations so that it is more efficient.
+
+_TBD (To Be Continued)..._

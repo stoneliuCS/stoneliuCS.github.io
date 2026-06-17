@@ -1,6 +1,14 @@
 #import "@preview/diagraph:0.3.7"
 
-= Information Worlds
+#metadata((
+  title: "ETL Data Engineering Prep",
+  date: "2026-06-16",
+  section: "notes",
+  topic: "Professional",
+  slug: "etl-interviews",
+)) <post-meta>
+
+== Information Worlds
 
 Data is an _asset_ to virtually all companies. They can be grouped into two different systems, _the operational systems_ are where the data is put in, and the _data warehouse_ is where we get the data out. We can boil down the requirements of a data warehouse into several requirements:
 

@@ -10,4 +10,8 @@ open: build
 	@(sleep 1 && open http://localhost:8000) &
 	cd _site && python3 -m http.server 8000
 
-.PHONY: all build serve open
+dev:
+	@(sleep 1 && open http://localhost:8000) &
+	python3 serve.py
+
+.PHONY: all build serve open dev

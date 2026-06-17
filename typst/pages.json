@@ -1,36 +1,5 @@
 {
   "pages": [
     { "src": "index.typ", "out": "index.html", "title": "Home", "current": "/" }
-  ],
-  "posts": [
-    {
-      "src": "posts/automatic-differentiation.typ",
-      "out": "2026/06/16/Automatic-Differentiation.html",
-      "url": "/2026/06/16/Automatic-Differentiation.html",
-      "title": "Automatic Differentiation",
-      "topic": "Deep Learning",
-      "author": "Stone Liu",
-      "date_meta": "16 Jun 2026",
-      "date_list": "June 16, 2026"
-    },
-    {
-      "src": "posts/etl-interviews.typ",
-      "out": "2026/06/16/etl-interviews.html",
-      "url": "/2026/06/16/etl-interviews.html",
-      "title": "ETL Data Engineering Prep",
-      "topic": "Professional",
-      "author": "Stone Liu",
-      "date_meta": "16 Jun 2026",
-      "date_list": "June 16, 2026"
-    },
-    {
-      "src": "posts/designing-software.typ",
-      "out": "2025/06/07/Designing-Software.html",
-      "url": "/2025/06/07/Designing-Software.html",
-      "title": "Designing Software",
-      "author": "Stone Liu",
-      "date_meta": "07 Jun 2025",
-      "date_list": "June 7, 2025"
-    }
   ]
 }

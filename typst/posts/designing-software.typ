@@ -1,3 +1,9 @@
+#metadata((
+  title: "Designing Software",
+  date: "2025-06-07",
+  section: "thoughts",
+)) <post-meta>
+
 = learning systematic program design
 
 == 1. the foundational building blocks

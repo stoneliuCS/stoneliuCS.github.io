@@ -12,10 +12,11 @@
 ]
 
 == Currently Reading
+_None_
 
 == Finished Reading
 - #emph[Non-Things: Upheaval in the Lifeworld] -- Byung-Chul Han
-- #emph[A Woman in the Polar Night] -- Christiane Ritter
-- #emph[No Longer Human] -- Osamu Dazai
 - #emph[Vita contemplativa] -- Byung-Chul Han
 - #emph[Man's Search for Meaning] -- Viktor E. Frankl
+- #emph[A Woman in the Polar Night] -- Christiane Ritter
+- #emph[No Longer Human] -- Osamu Dazai

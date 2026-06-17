@@ -74,35 +74,41 @@
   )
 }
 
-#let _has-topic(p) = "topic" in p
+// Which index a post belongs to. Set "section" explicitly in pages.json
+// ("thoughts" or "notes"); if it's missing we fall back to the old rule
+// (a "topic" means it's a note) so existing entries keep working.
+#let _section(p) = p.at("section", default: if "topic" in p { "notes" } else { "thoughts" })
+
+// Heading a note nests under on the Notes index. Notes without an explicit
+// "topic" collect under "Misc" rather than vanishing.
+#let _topic-of(p) = p.at("topic", default: "Misc")
 
 #let _link-item(p) = html.elem(
   "li",
   html.elem("a", attrs: (href: p.url))[#p.title - #p.date_list],
 )
 
-// The Thoughts index: standalone takes — posts that carry no "topic".
+// The Thoughts index: standalone takes — posts in section "thoughts".
 #let web-thoughts() = {
-  let posts = json("/pages.json").posts
-
   nav(_input("current"))
   html.elem("h1", attrs: (class: "underlined"))[Thoughts]
   html.elem("ul", attrs: (class: "toc"), {
-    for p in posts.filter(p => not _has-topic(p)) {
+    for p in json("/_posts.json").filter(p => _section(p) == "thoughts") {
       _link-item(p)
     }
   })
 }
 
-// The Notes index: topic-grouped notes (e.g. Deep Learning, Professional).
-// Every post that carries a "topic" nests under that heading.
+// The Notes index: posts in section "notes", grouped by topic
+// (e.g. Deep Learning, Professional).
 #let web-notes() = {
-  let posts = json("/pages.json").posts
+  let notes = json("/_posts.json").filter(p => _section(p) == "notes")
 
   let topic-names = ()
-  for p in posts {
-    if _has-topic(p) and not topic-names.contains(p.topic) {
-      topic-names.push(p.topic)
+  for p in notes {
+    let t = _topic-of(p)
+    if not topic-names.contains(t) {
+      topic-names.push(t)
     }
   }
 
@@ -113,7 +119,7 @@
       html.elem("li", {
         html.elem("strong")[#t]
         html.elem("ul", {
-          for p in posts.filter(p => _has-topic(p) and p.topic == t) {
+          for p in notes.filter(p => _topic-of(p) == t) {
             _link-item(p)
           }
         })

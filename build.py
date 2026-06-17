@@ -9,6 +9,7 @@ passes metadata via --input, compiles to HTML, stitches inline-math paragraphs
 back together, and injects <title>/<link> into <head>.
 """
 
+import datetime
 import json
 import re
 import shutil
@@ -18,9 +19,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 TYPST = ROOT / "typst"
+POSTS = TYPST / "posts"
 OUT = ROOT / "_site"
 CSS_HREF = "/assets/css/styles.css"
 WRAPPER = TYPST / "__build_wrapper__.typ"
+# Posts are auto-discovered from typst/posts/*.typ: each carries a
+# `#metadata((...)) <post-meta>` block that build.py reads (via `typst query`)
+# and expands into the full manifest entry written here for web.typ to read.
+POST_MANIFEST = TYPST / "_posts.json"
 
 # Typst HTML export splits a paragraph at every inline equation, emitting
 # <p>text</p><svg/><p>text</p>. Stitch those back into one paragraph so inline
@@ -84,8 +90,68 @@ def emit(out_rel: str, html: str, title: str) -> None:
     dest.write_text(inject_head(stitch_inline_math(html), title))
 
 
+def read_post_meta(src: Path) -> dict:
+    """Pull the <post-meta> dictionary out of a post via `typst query`."""
+    proc = subprocess.run(
+        ["typst", "query", "--root", str(TYPST), str(src),
+         "<post-meta>", "--field", "value", "--one"],
+        capture_output=True, text=True,
+    )
+    if proc.returncode != 0:
+        hint = ""
+        if "found 0" in proc.stderr:
+            hint = (
+                "\n  -> add a metadata block at the top:\n"
+                '     #metadata((title: \"...\", date: \"YYYY-MM-DD\", '
+                'section: \"notes\"|\"thoughts\")) <post-meta>'
+            )
+        raise RuntimeError(f"{src.name}: could not read <post-meta>{hint}\n{proc.stderr.strip()}")
+    return json.loads(proc.stdout)
+
+
+def post_entry(src: Path, meta: dict) -> dict:
+    """Expand a post's metadata into a full manifest entry, deriving the
+    mechanical fields (url, output path, both date formats) so they can't
+    drift out of sync."""
+    try:
+        date = datetime.date.fromisoformat(meta["date"])
+    except (KeyError, ValueError):
+        raise RuntimeError(f"{src.name}: <post-meta> needs a date as YYYY-MM-DD")
+    section = meta.get("section")
+    if section not in ("thoughts", "notes"):
+        raise RuntimeError(
+            f'{src.name}: <post-meta> section must be "thoughts" or "notes", got {section!r}'
+        )
+
+    slug = meta.get("slug") or meta["title"].replace(" ", "-")
+    out_rel = f"{date:%Y/%m/%d}/{slug}.html"
+    entry = {
+        "src": src.relative_to(TYPST).as_posix(),
+        "out": out_rel,
+        "url": "/" + out_rel,
+        "title": meta["title"],
+        "section": section,
+        "author": meta.get("author", "Stone Liu"),
+        "date_meta": f"{date:%d %b %Y}",
+        "date_list": f"{date:%B} {date.day}, {date:%Y}",
+        "_date": date.isoformat(),
+    }
+    if "topic" in meta:
+        entry["topic"] = meta["topic"]
+    return entry
+
+
+def discover_posts() -> list:
+    """Build the post manifest from typst/posts/*.typ, newest first."""
+    posts = [post_entry(src, read_post_meta(src)) for src in sorted(POSTS.glob("*.typ"))]
+    posts.sort(key=lambda p: p["_date"], reverse=True)
+    POST_MANIFEST.write_text(json.dumps(posts, indent=2) + "\n")
+    return posts
+
+
 def build() -> None:
     manifest = json.loads((TYPST / "pages.json").read_text())
+    posts = discover_posts()
 
     if OUT.exists():
         shutil.rmtree(OUT)
@@ -120,7 +186,7 @@ def build() -> None:
     print("  (generated) -> _site/notes.html")
 
     # Articles.
-    for p in manifest["posts"]:
+    for p in posts:
         html = compile_wrapper(
             f'#import "/lib/web.typ": web-post\n'
             f"#show: web-post\n"
