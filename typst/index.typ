@@ -1,4 +1,4 @@
-#import "/lib/web.typ": web-featured
+#import "/lib/web.typ": web-featured, home-photo
 
 = stone liu
 
@@ -15,6 +15,7 @@
   Don't you agree?"
 ]
 
+#home-photo("/assets/img/stone.jpeg", alt: "Stone Liu", caption: [a photo of me!])
 == Currently Reading
 _None (Open to recommendations!)_
 
@@ -24,3 +25,4 @@ _None (Open to recommendations!)_
 - #emph[Man's Search for Meaning] -- Viktor E. Frankl
 - #emph[A Woman in the Polar Night] -- Christiane Ritter
 - #emph[No Longer Human] -- Osamu Dazai
+

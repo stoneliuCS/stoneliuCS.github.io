@@ -227,6 +227,20 @@
   })
 }
 
+// A photo for the home page. On the web it emits a real <img> (class for CSS
+// placement) so the browser loads the JPEG directly; standalone PDF falls back
+// to a right-aligned native image. `src` is a site-absolute path under /assets.
+#let home-photo(src, alt: "", caption: none) = {
+  if _input("web") == "true" {
+    html.elem("figure", attrs: (class: "home-photo"), {
+      html.elem("img", attrs: (src: src, alt: alt))
+      if caption != none { html.elem("figcaption", caption) }
+    })
+  } else {
+    align(right, image(src, width: 200pt))
+  }
+}
+
 // An article: title + byline (from --input) above the body.
 #let web-post(doc) = {
   nav(_input("current"))

@@ -79,6 +79,33 @@ ul.toc .desc {
   color: #555;
 }
 
+/* Home-page photo at the bottom. Its right edge lines up with the navbar/aside
+   right edge: the negative right margin (same calc the sidenotes use) pushes it
+   out of the 42rem column into the margin; margin-left:auto right-aligns it. */
+.home-photo {
+  float: right;
+  clear: right;
+  width: 14rem;
+  margin: 0.3rem calc(42rem - min(75vw, 1400px)) 1.2rem 0;
+}
+.home-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+.home-photo figcaption {
+  margin-top: 0.4rem;
+  text-align: center;
+  font-style: italic;
+  font-size: 0.9em;
+  color: #555;
+}
+/* Narrow screens (matches the aside breakpoint): drop the float and right-align. */
+@media (max-width: 1320px) {
+  .home-photo { float: none; margin: 2rem 0 0 auto; }
+}
+
 /* ---- Article ("paper") ---- */
 .paper { max-width: 42rem; }
 .paper p { margin: 1.4rem 0; }
