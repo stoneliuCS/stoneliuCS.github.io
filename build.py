@@ -148,6 +148,8 @@ def post_entry(src: Path, meta: dict) -> dict:
     }
     if "topic" in meta:
         entry["topic"] = meta["topic"]
+    if meta.get("featured"):
+        entry["featured"] = True
     return entry
 
 

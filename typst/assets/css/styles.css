@@ -43,7 +43,12 @@ a { color: inherit; }
 .current { color: #aaa; }
 .underlined { text-decoration: underline; }
 
-nav { font-size: 1.1rem; margin-bottom: 3rem; }
+nav {
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.15);
+}
 nav a { margin-right: 0.7rem; }
 
 h1 {
@@ -121,10 +126,12 @@ ul.toc strong { font-style: italic; font-weight: 600; }
   float: right;
   clear: right;
   width: 16rem;
-  /* negative right margin lifts the box out of the 42rem text column into the
-     empty right margin; it floats beside the paragraph it follows. Geometry is
-     sized so the box stays on-screen down to the breakpoint below. */
-  margin: 0.3rem -17.5rem 1.2rem 0;
+  /* Right-align the box to the content (navbar) right edge. The content column
+     is min(75vw, 1400px) wide and the text column is 42rem, so the gutter to its
+     right is that minus 42rem; a negative right margin of the same size pushes
+     the box's right edge out to meet the navbar. It floats beside the paragraph
+     it follows. (75vw = 100vw - 2*12.5% page padding; 1400px is the body cap.) */
+  margin: 0.3rem calc(42rem - min(75vw, 1400px)) 1.2rem 0;
   padding: 0.7rem 0.95rem;
   background: #f3f1e7;
   border: 1px solid #ddd9c5;
@@ -138,8 +145,9 @@ ul.toc strong { font-style: italic; font-weight: 600; }
 .paper aside.sidenote p:first-child { margin-top: 0; }
 .paper aside.sidenote p:last-child { margin-bottom: 0; }
 
-/* Not enough room for a margin column: fold the note inline as a callout. */
-@media (max-width: 1200px) {
+/* Not enough room for a margin column (gutter < the 16rem box once the note is
+   right-aligned to the navbar): fold the note inline as a callout. */
+@media (max-width: 1320px) {
   .paper aside.sidenote {
     float: none;
     width: auto;

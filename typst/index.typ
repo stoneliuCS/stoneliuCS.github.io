@@ -1,4 +1,8 @@
+#import "/lib/web.typ": web-featured
+
 = stone liu
+
+#web-featured()
 
 #emph[
   "In any case, the things you thought you ought to do, well.. \
