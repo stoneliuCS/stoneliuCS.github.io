@@ -80,6 +80,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, format, *args):  # quieter; rebuild logs are what matter
         pass
 
+    def end_headers(self):  # never cache anything in dev, so reloads are fresh
+        self.send_header("Cache-Control", "no-store")
+        super().end_headers()
+
     def do_GET(self):
         if self.path.startswith("/__livereload__"):
             return self._livereload()
@@ -99,7 +103,6 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store")
         self.end_headers()
         self.wfile.write(body)
 
@@ -112,7 +115,6 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", "text/plain")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("Cache-Control", "no-store")
         self.end_headers()
         self.wfile.write(body)
 

@@ -10,6 +10,7 @@ back together, and injects <title>/<link> into <head>.
 """
 
 import datetime
+import hashlib
 import json
 import re
 import shutil
@@ -21,8 +22,16 @@ ROOT = Path(__file__).resolve().parent
 TYPST = ROOT / "typst"
 POSTS = TYPST / "posts"
 OUT = ROOT / "_site"
+CSS_FILE = TYPST / "assets" / "css" / "styles.css"
 CSS_HREF = "/assets/css/styles.css"
 WRAPPER = TYPST / "__build_wrapper__.typ"
+
+
+def css_href() -> str:
+    """CSS link with a content-hash query so browsers/CDNs can't serve a stale
+    stylesheet: the URL changes whenever styles.css changes."""
+    digest = hashlib.sha1(CSS_FILE.read_bytes()).hexdigest()[:8]
+    return f"{CSS_HREF}?v={digest}"
 # Posts are auto-discovered from typst/posts/*.typ: each carries a
 # `#metadata((...)) <post-meta>` block that build.py reads (via `typst query`)
 # and expands into the full manifest entry written here for web.typ to read.
@@ -60,7 +69,7 @@ def stitch_inline_math(html: str) -> str:
 def inject_head(html: str, title: str) -> str:
     extra = (
         f"    <title>{title}</title>\n"
-        f'    <link rel="stylesheet" href="{CSS_HREF}">\n'
+        f'    <link rel="stylesheet" href="{css_href()}">\n'
     )
     if "  </head>" not in html:
         raise RuntimeError("expected '</head>' in Typst HTML output")
@@ -73,6 +82,7 @@ def compile_wrapper(wrapper_src: str, inputs: dict) -> str:
         cmd = [
             "typst", "compile", "--features", "html", "--format", "html",
             "--root", str(TYPST),
+            "--input", "web=true",  # lets lib/web.typ pick its HTML branch (e.g. aside)
         ]
         for key, value in inputs.items():
             cmd += ["--input", f"{key}={value}"]

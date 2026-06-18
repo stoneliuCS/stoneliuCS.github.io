@@ -114,6 +114,41 @@ ul.toc strong { font-style: italic; font-weight: 600; }
   font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 }
 
+/* ---- Margin asides: a boxed note in the right margin ---- */
+.paper { position: relative; }
+.paper aside.sidenote {
+  box-sizing: border-box;
+  float: right;
+  clear: right;
+  width: 16rem;
+  /* negative right margin lifts the box out of the 42rem text column into the
+     empty right margin; it floats beside the paragraph it follows. Geometry is
+     sized so the box stays on-screen down to the breakpoint below. */
+  margin: 0.3rem -17.5rem 1.2rem 0;
+  padding: 0.7rem 0.95rem;
+  background: #f3f1e7;
+  border: 1px solid #ddd9c5;
+  border-left: 3px solid #b3ad8e;
+  border-radius: 4px;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: #333;
+}
+.paper aside.sidenote p { margin: 0.45rem 0; }
+.paper aside.sidenote p:first-child { margin-top: 0; }
+.paper aside.sidenote p:last-child { margin-bottom: 0; }
+
+/* Not enough room for a margin column: fold the note inline as a callout. */
+@media (max-width: 1200px) {
+  .paper aside.sidenote {
+    float: none;
+    width: auto;
+    margin: 1.4rem 0;
+    border-radius: 4px;
+    font-size: 1.2rem;
+  }
+}
+
 /* math & diagrams are the only embedded SVG (build.py aligns inline ones) */
 .math-block {
   text-align: center;

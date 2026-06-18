@@ -28,6 +28,26 @@
 
 #let _input(key, default: "") = sys.inputs.at(key, default: default)
 
+// Margin aside for extra commentary. On the web it floats into the right
+// margin as <aside class="sidenote">; compiled to PDF (no `web` input set by
+// build.py) it degrades to an inline boxed callout, so a post that uses it
+// still compiles to PDF on its own. Import it in a post with:
+//   #import "/lib/web.typ": aside
+#let aside(body) = {
+  if _input("web") == "true" {
+    html.elem("aside", attrs: (class: "sidenote"), body)
+  } else {
+    block(
+      width: 100%,
+      inset: (x: 10pt, y: 8pt),
+      radius: 4pt,
+      fill: luma(246),
+      stroke: (left: 2pt + luma(200)),
+      text(size: 0.88em, body),
+    )
+  }
+}
+
 // Wrap document content in <article class="paper">, applying the show rules
 // that translate plain-Typst layout content into web-friendly output. The
 // rules must be active where `doc` is realized, so the wrapping happens here.
