@@ -31,8 +31,10 @@
 // Margin aside for extra commentary. On the web it floats into the right
 // margin as <aside class="sidenote">; compiled to PDF (no `web` input set by
 // build.py) it degrades to an inline boxed callout, so a post that uses it
-// still compiles to PDF on its own. Import it in a post with:
-//   #import "/lib/web.typ": aside
+// still compiles to PDF on its own. Import it in a post (posts/ is nested, so
+// use a path relative to the post — this resolves in the editor's LSP too,
+// which doesn't know build.py's --root):
+//   #import "../lib/web.typ": aside
 #let aside(body) = {
   if _input("web") == "true" {
     html.elem("aside", attrs: (class: "sidenote"), body)
@@ -54,7 +56,7 @@
 // "dot notation" for layers too large to draw in full (e.g. the 784 inputs of
 // an MNIST net). Put the call inside a #figure(...) so the build embeds it as SVG.
 //
-//   #import "/lib/web.typ": draw-net
+//   #import "../lib/web.typ": draw-net   // relative path from a post in posts/
 //   #figure(draw-net((3, 4, 2)))
 //   #figure(draw-net(((head: 3, tail: 1), 16, 16, 10)))   // 784 -> 16 -> 16 -> 10
 //
@@ -231,7 +233,15 @@
   _article(
     {
       html.elem("h1", attrs: (class: "title"))[#_input("title")]
-      html.elem("p", attrs: (class: "byline"))[#_input("date") · #_input("author")]
+      // The " · N min read" suffix is appended to this byline by build.py, since
+      // it depends on the rendered content.
+      html.elem("p", attrs: (class: "byline"), {
+        let modified = _input("modified")
+        _input("date")
+        if modified != "" { [ · updated #modified] }
+        [ · ]
+        _input("author")
+      })
     },
     doc,
   )
@@ -246,10 +256,13 @@
 // "topic" collect under "Misc" rather than vanishing.
 #let _topic-of(p) = p.at("topic", default: "Misc")
 
-#let _link-item(p) = html.elem(
-  "li",
-  html.elem("a", attrs: (href: p.url))[#p.title - #p.date_list],
-)
+#let _link-item(p) = html.elem("li", {
+  html.elem("a", attrs: (href: p.url))[#p.title - #p.date_list]
+  // Optional one-line blurb from the post's <post-meta> `description`.
+  if "description" in p {
+    html.elem("span", attrs: (class: "desc"), emph(p.description))
+  }
+})
 
 // The Thoughts index: standalone takes — posts in section "thoughts".
 #let web-thoughts() = {

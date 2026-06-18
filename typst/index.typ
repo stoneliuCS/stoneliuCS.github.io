@@ -16,7 +16,7 @@
 ]
 
 == Currently Reading
-_None_
+_None (Open to recommendations!)_
 
 == Finished Reading
 - #emph[Non-Things: Upheaval in the Lifeworld] -- Byung-Chul Han

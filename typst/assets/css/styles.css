@@ -72,6 +72,12 @@ ul.toc ul {
 ul.toc li { margin: 0.4rem 0; }
 ul.toc p { margin: 0; }
 ul.toc strong { font-style: italic; font-weight: 600; }
+/* One-line italic blurb under a listed article (from <post-meta> description). */
+ul.toc .desc {
+  display: block;
+  font-size: 0.9em;
+  color: #555;
+}
 
 /* ---- Article ("paper") ---- */
 .paper { max-width: 42rem; }

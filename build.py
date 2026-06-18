@@ -16,6 +16,7 @@ import re
 import shutil
 import subprocess
 import sys
+from html import unescape
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -64,6 +65,39 @@ def _align_inline(svg: str) -> str:
 
 def stitch_inline_math(html: str) -> str:
     return _INLINE_MATH.sub(lambda m: " " + _align_inline(m.group(1)) + " ", html)
+
+
+# Estimated reading time, from the rendered text. We strip SVGs (math/diagrams),
+# style/script, then all tags, so only readable prose + code is counted; ~1000
+# characters/minute approximates ~200 wpm. Computed post-compile and injected
+# into the byline, since it depends on the rendered content.
+_SVG_BLOCK = re.compile(r"<svg\b.*?</svg>", re.S)
+_STYLE_SCRIPT = re.compile(r"<(style|script)\b.*?</\1>", re.S)
+_TAGS = re.compile(r"<[^>]+>")
+_BYLINE = re.compile(r'(<p class="byline">.*?)(</p>)', re.S)
+READING_CHARS_PER_MIN = 1000
+
+
+def reading_minutes(html: str) -> int:
+    text = _SVG_BLOCK.sub(" ", html)
+    text = _STYLE_SCRIPT.sub(" ", text)
+    text = unescape(_TAGS.sub(" ", text))
+    chars = len(re.sub(r"\s+", " ", text).strip())
+    return max(1, round(chars / READING_CHARS_PER_MIN))
+
+
+def inject_reading_time(html: str) -> str:
+    minutes = reading_minutes(html)
+    return _BYLINE.sub(rf"\g<1> · {minutes} min read\g<2>", html, count=1)
+
+
+def last_modified(src: Path) -> str:
+    """Date (YYYY-MM-DD) of the last git commit touching the file, '' if none."""
+    proc = subprocess.run(
+        ["git", "log", "-1", "--format=%cs", "--", str(src)],
+        capture_output=True, text=True, cwd=ROOT,
+    )
+    return proc.stdout.strip() if proc.returncode == 0 else ""
 
 
 def inject_head(html: str, title: str) -> str:
@@ -148,8 +182,19 @@ def post_entry(src: Path, meta: dict) -> dict:
     }
     if "topic" in meta:
         entry["topic"] = meta["topic"]
+    if meta.get("description"):
+        entry["description"] = meta["description"]
     if meta.get("featured"):
         entry["featured"] = True
+    # "Last updated" from git: shown only when later than the publish date.
+    mod = last_modified(src)
+    if mod:
+        try:
+            mdate = datetime.date.fromisoformat(mod)
+            if mdate > date:
+                entry["modified_meta"] = f"{mdate:%d %b %Y}"
+        except ValueError:
+            pass
     return entry
 
 
@@ -208,9 +253,10 @@ def build() -> None:
                 "title": p["title"],
                 "date": p["date_meta"],
                 "author": p["author"],
+                "modified": p.get("modified_meta", ""),
             },
         )
-        emit(p["out"], html, p["title"])
+        emit(p["out"], inject_reading_time(html), p["title"])
         print(f"  {p['src']} -> _site/{p['out']}")
 
     print(f"Built site into {OUT}")
