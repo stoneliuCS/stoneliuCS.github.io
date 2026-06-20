@@ -218,7 +218,7 @@
 // on narrow screens). Renders nothing if none are marked. Uses native
 // list/link so index.typ still compiles to PDF on its own.
 // Call it from index.typ: `#import "/lib/web.typ": web-featured`.
-#let web-featured(title: "Featured Articles") = {
+#let web-featured(title: "author picks") = {
   let posts = json("/_posts.json").filter(p => p.at("featured", default: false))
   if posts.len() == 0 { return }
   aside({
