@@ -1,7 +1,7 @@
 #import "@preview/diagraph:0.3.7"
 
 #metadata((
-  title: "Automatic Differentiation",
+  title: "Forward Automatic Differentiation",
   date: "2026-06-16",
   section: "notes",
   topic: "Deep Learning",
@@ -134,5 +134,3 @@ If we differentiate with respect to $n_2$ then we just have to swap our seed val
 ```
 
 So really _forward autodifferentiation_ is just a way to reuse past computations so that it is more efficient.
-
-_TBD (To Be Continued)..._

@@ -371,7 +371,7 @@ Furthermore we can easily calculate $frac(partial z^l, partial w^l)$ to be
 $ frac(partial z^l, partial w^l) = a^(l - 1) $
 So we finally have that
 $
-  frac(partial C, partial w^l) = frac(partial C, a^l) dot sigma(z^l) dot (1 - sigma(z^l)) dot a^(l-1)
+  frac(partial C, partial w^l) = frac(partial C, a^l) dot.circle sigma(z^l) dot (1 - sigma(z^l)) dot a^(l-1)
 $
 By convention we set
 $ delta^l = frac(partial C, a^l) dot.circle sigma(z^l) dot (1 - sigma(z^l)) $
@@ -433,7 +433,7 @@ $
 	return gradB, gradW
 ```
 
-That's it! We achieve approximately $95 percent$ ish on the _MNIST_ test dataset.
+That's it! We achieve approximately $95 percent$ accuracy on the _MNIST_ test dataset.
 
 == Resources
 - #link("http://neuralnetworksanddeeplearning.com/")[Neural Networks and Deep Learning]
