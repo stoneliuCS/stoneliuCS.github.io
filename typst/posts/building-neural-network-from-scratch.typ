@@ -336,6 +336,8 @@ $
 $
 
 But what is $frac(partial C, partial w^l)$ and $frac(partial C, partial b^l)$? Let us consider the final layer of our network, $l = 4$. We know that in the final layer the preactivation value $z_4$ is equal to
+
+=== The Gradient of the Cost Function With Respect to the Weights
 $
   z^4 = W^4 a^3 + b^4 => sigma(z^4) = a^4 = mat(
     a_1^4;
@@ -372,10 +374,68 @@ $
   frac(partial C, partial w^l) = frac(partial C, a^l) dot sigma(z^l) dot (1 - sigma(z^l)) dot a^(l-1)
 $
 By convention we set
-$ delta^l = frac(partial C, a^l) dot sigma(z^l) dot (1 - sigma(z^l)) $
+$ delta^l = frac(partial C, a^l) dot.circle sigma(z^l) dot (1 - sigma(z^l)) $
 So we can finally get the famous
 $
   frac(partial C, partial w^l) = delta^l dot a^(l - 1)
 $
 
-_TBD (To Be Continued)..._
+=== The Gradient of the Cost Function With Respect to the Bias
+Similarily we can compute the gradient with respect to the _bias_ term $b$. If we follow the _chain rule_ again we can see that
+
+$
+  frac(partial C, partial b^l) = frac(partial C, partial a^l) dot frac(partial a^l, partial z^l) dot frac(partial z^l, partial b^l)
+$
+
+We have already computed $frac(partial C, partial a^l)$ and $frac(partial a^l, partial z^l)$ from above and $frac(partial z^l, partial b^l) = 1$. So quite elegantly it collapses down to
+
+$
+  frac(partial C, partial b^l) = delta^l
+$
+```go
+func (this *Network[N]) Backpropogation(input *Vector[N],
+	prediction *Vector[N],
+	target *Vector[N],
+	loss Cost[N]) ([]*Vector[N], []*Matrix[N]) {
+	// First compute the error of the prediction
+	layer := int(this.layers - 1)
+	derivative_of_cost_with_respect_to_L := loss.Gradient(prediction, target)
+	derivative_of_activation := this.activationFunctionsPerLayer[layer].Gradient(this.preActivations[layer])
+	delta := derivative_of_cost_with_respect_to_L.HadamardMultiply(derivative_of_activation)
+	gradB := make([]*Vector[N], this.layers) // We store the gradients at each layer
+	gradW := make([]*Matrix[N], this.layers)
+  // Backpropogate the error results through the network...
+```
+
+In order to backpropogate all of our calculations we perform this iteratively. That means calculating
+$
+  delta^(l - 1) = frac(partial C, a^(l - 1)) dot.circle sigma(z^(l - 1)) dot (1 - sigma(z^(l - 1)))
+$
+```go
+// remaining function
+	for layer >= 0 {
+		gradB[layer] = delta
+		var inActivations *Vector[N]
+		if layer-1 < 0 {
+			inActivations = input
+		} else {
+			inActivations = this.activations[layer-1]
+		}
+		weightGrad := delta.Multiply(inActivations.Transpose())
+		gradW[layer] = weightGrad
+		if layer > 0 {
+			wTransposeDelta := this.weights[layer].Transpose().Multiply(delta)
+			activationGradient := this.activationFunctionsPerLayer[layer-1].Gradient(this.preActivations[layer-1])
+			delta = wTransposeDelta.HadamardMultiply(activationGradient)
+		}
+		layer -= 1
+	}
+	return gradB, gradW
+```
+
+That's it! We achieve approximately $95 percent$ ish on the _MNIST_ test dataset.
+
+== Resources
+- #link("http://neuralnetworksanddeeplearning.com/")[Neural Networks and Deep Learning]
+- #link("https://medium.com/binaryandmore/beginners-guide-to-deriving-and-implementing-backpropagation-e3c1a5a1e536")[Backpropogation Derivation]
+- #link("https://www.youtube.com/watch?v=aircAruvnKk&vl=en")[3Blue1Brown Deep Learning]

@@ -4,9 +4,9 @@
   section: "thoughts",
 )) <post-meta>
 
-= learning systematic program design
+== learning systematic program design
 
-== 1. the foundational building blocks
+=== 1. the foundational building blocks
 
 When designing programs, at the most foundational level there needs to be some real-world problem that needs to be translated into the proper _data definitons_.
 
@@ -18,7 +18,7 @@ The next steps might involve creating examples of these internal data representa
 
 These tips will apply to any language, no matter how esoteric it can be because every programming language has some concept of _functions_ and _data_.
 
-== 2. functions and objects
+=== 2. functions and objects
 
 Every complex software program can be boiled down to a bunch of functions or objects.
 
