@@ -26,6 +26,26 @@ CSS_FILE = TYPST / "assets" / "css" / "styles.css"
 CSS_HREF = "/assets/css/styles.css"
 WRAPPER = TYPST / "__build_wrapper__.typ"
 
+# Google Analytics (GA4) Measurement ID, e.g. "G-XXXXXXXXXX". Find it under
+# analytics.google.com -> Admin -> Data Streams -> your web stream. It is public
+# (served in every page's HTML), so it's fine to commit. Leave "" to disable.
+GA_MEASUREMENT_ID = "G-7SRSHNGC31"
+
+
+def ga_snippet() -> str:
+    """The standard gtag.js snippet, or "" when no Measurement ID is set."""
+    if not GA_MEASUREMENT_ID:
+        return ""
+    return (
+        f'    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>\n'
+        f"    <script>\n"
+        f"      window.dataLayer = window.dataLayer || [];\n"
+        f"      function gtag(){{dataLayer.push(arguments);}}\n"
+        f"      gtag('js', new Date());\n"
+        f"      gtag('config', '{GA_MEASUREMENT_ID}');\n"
+        f"    </script>\n"
+    )
+
 
 def css_href() -> str:
     """CSS link with a content-hash query so browsers/CDNs can't serve a stale
@@ -79,6 +99,7 @@ def inject_head(html: str, title: str) -> str:
     extra = (
         f"    <title>{title}</title>\n"
         f'    <link rel="stylesheet" href="{css_href()}">\n'
+        f"{ga_snippet()}"
     )
     if "  </head>" not in html:
         raise RuntimeError("expected '</head>' in Typst HTML output")
