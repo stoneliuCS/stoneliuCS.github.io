@@ -206,6 +206,25 @@ ul.toc .desc {
   color: #6f8fb8;
 }
 
+/* ---- Definition: a labelled term + its definition, inline in the flow ---- */
+.paper .definition {
+  margin: 1.6rem 0;
+  padding: 0.7rem 1rem;
+  background: #f1f4ee;
+  border: 1px solid #dce3d4;
+  border-left: 3px solid #7a9a6f;
+  border-radius: 4px;
+}
+.paper .definition .def-term {
+  margin: 0 0 0.3rem;
+  font-weight: 600;
+  font-style: italic;
+  color: #4f6b48;
+}
+.paper .definition .def-body { margin: 0; }
+.paper .definition .def-body p:first-child { margin-top: 0; }
+.paper .definition .def-body p:last-child { margin-bottom: 0; }
+
 /* math & diagrams are the only embedded SVG (build.py aligns inline ones) */
 .math-block {
   text-align: center;

@@ -10,6 +10,9 @@
 #import "@preview/cetz-plot:0.1.1": plot
 #import "@preview/neural-netz:0.3.0": *
 
+#aside[
+  You can view the source code for this project #link("https://github.com/stoneliuCS/goat")[here] on my github.
+]
 == Neural Networks
 Neural Networks have always been quite mysterious to me, even after learning about them in school I could not fully grasp how the inner machinery of the network learned arbitrary tasks such as image classification. So like any normal person ought to do, I decided I would take on the task of building it completely from scratch myself using this #link("http://neuralnetworksanddeeplearning.com/chap1.html")[book].
 
@@ -434,6 +437,12 @@ $
 That's it! We achieve approximately $95 percent$ accuracy on the _MNIST_ test dataset.
 
 == Resources
-- #link("http://neuralnetworksanddeeplearning.com/")[Neural Networks and Deep Learning]
-- #link("https://medium.com/binaryandmore/beginners-guide-to-deriving-and-implementing-backpropagation-e3c1a5a1e536")[Backpropogation Derivation]
-- #link("https://www.youtube.com/watch?v=aircAruvnKk&vl=en")[3Blue1Brown Deep Learning]
+- #link(
+    "http://neuralnetworksanddeeplearning.com/",
+  )[Neural Networks and Deep Learning]
+- #link(
+    "https://medium.com/binaryandmore/beginners-guide-to-deriving-and-implementing-backpropagation-e3c1a5a1e536",
+  )[Backpropogation Derivation]
+- #link(
+    "https://www.youtube.com/watch?v=aircAruvnKk&vl=en",
+  )[3Blue1Brown Deep Learning]

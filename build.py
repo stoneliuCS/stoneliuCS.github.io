@@ -141,10 +141,12 @@ def read_post_meta(src: Path) -> dict:
 
 
 def post_location(src: Path) -> tuple:
-    """Derive (section, topic) from a post's folder layout, NOT its metadata:
-        posts/<section>/<file>.typ            -> (section, None)   standalone
-        posts/<section>/<topic>/<file>.typ    -> (section, topic)  grouped
-    The topic is the folder name verbatim (so it can read e.g. "Deep Learning")."""
+    """Derive (section, categories) from a post's folder layout, NOT its metadata:
+        posts/<section>/<file>.typ                  -> (section, [])             standalone
+        posts/<section>/<cat>/<file>.typ            -> (section, [cat])          grouped
+        posts/<section>/<cat>/<subcat>/<file>.typ   -> (section, [cat, subcat])  nested
+    Each category is the folder name verbatim (e.g. "Deep Learning"); the index
+    renders the chain as nested bullets. Any depth is allowed."""
     parts = src.relative_to(POSTS).parts  # (..., "file.typ")
     folders = parts[:-1]
     if len(folders) == 0:
@@ -157,14 +159,7 @@ def post_location(src: Path) -> tuple:
         raise RuntimeError(
             f"{src.name}: section folder must be 'notes' or 'thoughts', got {section!r}"
         )
-    if len(folders) == 1:
-        return section, None
-    if len(folders) == 2:
-        return section, folders[1]
-    raise RuntimeError(
-        f"{src.name}: posts nest at most one topic folder deep "
-        f"(got {'/'.join(folders)})"
-    )
+    return section, list(folders[1:])
 
 
 def post_entry(src: Path, meta: dict) -> dict:
@@ -176,7 +171,7 @@ def post_entry(src: Path, meta: dict) -> dict:
         date = datetime.date.fromisoformat(meta["date"])
     except (KeyError, ValueError):
         raise RuntimeError(f"{src.name}: <post-meta> needs a date as YYYY-MM-DD")
-    section, topic = post_location(src)
+    section, categories = post_location(src)
 
     slug = meta.get("slug") or meta["title"].replace(" ", "-")
     out_rel = f"{date:%Y/%m/%d}/{slug}.html"
@@ -191,8 +186,8 @@ def post_entry(src: Path, meta: dict) -> dict:
         "date_list": f"{date:%B} {date.day}, {date:%Y}",
         "_date": date.isoformat(),
     }
-    if topic is not None:
-        entry["topic"] = topic
+    if categories:
+        entry["categories"] = categories
     if meta.get("description"):
         entry["description"] = meta["description"]
     if meta.get("featured"):

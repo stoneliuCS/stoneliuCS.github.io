@@ -76,6 +76,33 @@
 //   #edit(date: "22 Jun 2026")[Reworked this section.]
 #let edit(body, date: none) = aside(body, edit: true, date: date)
 
+// A labelled definition block: a term and its definition. On the web it renders
+// as <div class="definition"> (term label + body); in standalone PDF it degrades
+// to a styled block. Import it like `aside` (path relative to the post).
+//   #definition("Perceptron")[A neuron mapping inputs to a binary output via a
+//     weighted threshold.]
+#let definition(term, body) = {
+  if _input("web") == "true" {
+    html.elem("div", attrs: (class: "definition"), {
+      html.elem("p", attrs: (class: "def-term"), term)
+      html.elem("div", attrs: (class: "def-body"), body)
+    })
+  } else {
+    block(
+      width: 100%,
+      inset: (x: 10pt, y: 8pt),
+      radius: 4pt,
+      fill: rgb("#f1f4ee"),
+      stroke: (left: 2pt + rgb("#7a9a6f")),
+      {
+        text(weight: "bold", style: "italic")[#term]
+        parbreak()
+        text(size: 0.95em, body)
+      },
+    )
+  }
+}
+
 // Draw a fully-connected neural net. `layers` is a list whose entries are
 // either an integer (draw that many neurons) or a dict (head: h, tail: t) that
 // abbreviates a big layer as h neurons, a vertical ellipsis, then t neurons --
@@ -280,13 +307,8 @@
 }
 
 // Which index a post belongs to. Set "section" explicitly in pages.json
-// ("thoughts" or "notes"); if it's missing we fall back to the old rule
-// (a "topic" means it's a note) so existing entries keep working.
-#let _section(p) = p.at("section", default: if "topic" in p { "notes" } else { "thoughts" })
-
-// Heading a note nests under on the Notes index. Notes without an explicit
-// "topic" collect under "Misc" rather than vanishing.
-#let _topic-of(p) = p.at("topic", default: "Misc")
+// Which index a post belongs to ("notes"/"thoughts"); set by build.py.
+#let _section(p) = p.at("section", default: "thoughts")
 
 #let _link-item(p) = html.elem("li", {
   html.elem("a", attrs: (href: p.url))[#p.title - #p.date_list]
@@ -296,42 +318,51 @@
   }
 })
 
-// The Thoughts index: standalone takes — posts in section "thoughts".
-#let web-thoughts() = {
-  nav(_input("current"))
-  html.elem("h1", attrs: (class: "underlined"))[Thoughts]
-  html.elem("ul", attrs: (class: "toc"), {
-    for p in json("/_posts.json").filter(p => _section(p) == "thoughts") {
-      _link-item(p)
-    }
-  })
-}
-
-// The Notes index: posts in section "notes", grouped by topic
-// (e.g. Deep Learning, Professional).
-#let web-notes() = {
-  let notes = json("/_posts.json").filter(p => _section(p) == "notes")
-
-  let topic-names = ()
-  for p in notes {
-    let t = _topic-of(p)
-    if not topic-names.contains(t) {
-      topic-names.push(t)
-    }
+// Build a nested tree from posts' `categories` (the folder chain under the
+// section). A post with no categories is standalone and lands at the root.
+//   node = (posts: (..), subs: (name: node, ..))
+#let _tree-insert(node, cats, post) = {
+  if cats.len() == 0 {
+    return (posts: node.posts + (post,), subs: node.subs)
   }
-
-  nav(_input("current"))
-  html.elem("h1", attrs: (class: "underlined"))[Notes]
-  html.elem("ul", attrs: (class: "toc"), {
-    for t in topic-names {
-      html.elem("li", {
-        html.elem("strong")[#t]
-        html.elem("ul", {
-          for p in notes.filter(p => _topic-of(p) == t) {
-            _link-item(p)
-          }
-        })
-      })
-    }
-  })
+  let head = cats.first()
+  let child = node.subs.at(head, default: (posts: (), subs: (:)))
+  let subs = node.subs
+  subs.insert(head, _tree-insert(child, cats.slice(1), post))
+  (posts: node.posts, subs: subs)
 }
+
+#let _build-tree(posts) = {
+  let root = (posts: (), subs: (:))
+  for p in posts {
+    root = _tree-insert(root, p.at("categories", default: ()), p)
+  }
+  root
+}
+
+// Render a node's children as <li>s: each subdirectory is a category bullet with
+// its own nested <ul> (recursively); standalone posts are plain leaf bullets.
+// Directories first (newest-post-first order), then standalone posts.
+#let _render-node(node) = {
+  for (name, child) in node.subs {
+    html.elem("li", {
+      html.elem("strong")[#name]
+      html.elem("ul", _render-node(child))
+    })
+  }
+  for p in node.posts {
+    _link-item(p)
+  }
+}
+
+// An index page: every folder under the section becomes a (possibly nested)
+// category bullet; posts directly in the section folder are standalone bullets.
+#let _index(section-name, title) = {
+  let posts = json("/_posts.json").filter(p => _section(p) == section-name)
+  nav(_input("current"))
+  html.elem("h1", attrs: (class: "underlined"))[#title]
+  html.elem("ul", attrs: (class: "toc"), _render-node(_build-tree(posts)))
+}
+
+#let web-thoughts() = _index("thoughts", "Thoughts")
+#let web-notes() = _index("notes", "Notes")

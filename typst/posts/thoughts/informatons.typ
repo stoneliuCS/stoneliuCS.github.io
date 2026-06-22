@@ -13,7 +13,9 @@ I've been reading my assigned book for a monthly book club with a few friends. T
   I am not entirely sure what exactly _Han_ is describing when he says the pornographic nature of information. I infer it to be something akin to exposing ourselves to the pleasure of constant stimulus and information.
 ]
 
-#edit(date: "22 Jun 2026")[_"Control of the terristrial"_ is probably something that Han disagrees with, and thus it is probably correct to assume that we never actually had much control over things apart from _tools, equipment, and such_.]
+#edit(
+  date: "22 Jun 2026",
+)[_"Control of the terristrial"_ is probably something that Han disagrees with, and thus it is probably correct to assume that we never actually had much control over things apart from _tools, equipment, and such_.]
 == Intangibles
 Han discusses the so called _non-things_. These are directly in opposition to _things_. In our current age, our lives are dominated by information, to the point that we have become aroused by it, and perceive of ourselves as so called _datasexuals_. _"Being is information"_ (Han 5) and since information can be controlled, exploited, selectively chosen, we have in essence turned in the control of the _terristrial_ for digitization. Its paradoxical that we believe that all of the conveniences of modern day technology would give us more free time to do the things we want when in reality we become subservient to the algorithm monster.
 
