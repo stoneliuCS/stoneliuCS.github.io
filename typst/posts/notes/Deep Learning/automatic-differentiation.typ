@@ -3,8 +3,6 @@
 #metadata((
   title: "Forward Automatic Differentiation",
   date: "2026-06-16",
-  section: "notes",
-  topic: "Deep Learning",
   featured: true,
 )) <post-meta>
 

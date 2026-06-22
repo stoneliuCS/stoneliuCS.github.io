@@ -190,6 +190,22 @@ ul.toc .desc {
   }
 }
 
+/* ---- Edit variant of the sidenote: same box, tinted blue, with an "Edit"
+   header. Triggered by `aside(edit: true)` / the `edit(...)` alias. ---- */
+.paper aside.sidenote.edit {
+  background: #eef2f7;
+  border-color: #d3ddea;
+  border-left-color: #6f8fb8;
+}
+.paper aside.sidenote.edit .edit-meta {
+  margin: 0 0 0.4rem;
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6f8fb8;
+}
+
 /* math & diagrams are the only embedded SVG (build.py aligns inline ones) */
 .math-block {
   text-align: center;

@@ -3,8 +3,6 @@
 #metadata((
   title: "ETL Data Engineering Prep",
   date: "2026-06-16",
-  section: "notes",
-  topic: "Professional",
   slug: "etl-interviews",
 )) <post-meta>
 

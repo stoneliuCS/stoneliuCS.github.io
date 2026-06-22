@@ -31,24 +31,50 @@
 // Margin aside for extra commentary. On the web it floats into the right
 // margin as <aside class="sidenote">; compiled to PDF (no `web` input set by
 // build.py) it degrades to an inline boxed callout, so a post that uses it
-// still compiles to PDF on its own. Import it in a post (posts/ is nested, so
-// use a path relative to the post — this resolves in the editor's LSP too,
-// which doesn't know build.py's --root):
-//   #import "../lib/web.typ": aside
-#let aside(body) = {
+// still compiles to PDF on its own. Import it with a path RELATIVE to the post
+// (resolves in the editor's LSP too, which doesn't know build.py's --root). The
+// number of `../` depends on folder depth:
+//   posts/<section>/<file>.typ          -> #import "../../lib/web.typ": aside
+//   posts/<section>/<topic>/<file>.typ  -> #import "../../../lib/web.typ": aside
+// `edit: true` turns it into a dated "edit" note: same sidenote layout/size,
+// tinted blue, with an "Edit · <date>" header. `edit(...)` below is the alias.
+#let aside(body, edit: false, date: none) = {
+  let head = if edit {
+    if _input("web") == "true" {
+      html.elem("p", attrs: (class: "edit-meta"), {
+        [Edit]
+        if date != none { [ · #date] }
+      })
+    } else {
+      text(size: 0.78em, weight: "bold", fill: rgb("#6f8fb8"))[
+        EDIT#if date != none [ · #date]
+      ]
+      parbreak()
+    }
+  }
   if _input("web") == "true" {
-    html.elem("aside", attrs: (class: "sidenote"), body)
+    html.elem(
+      "aside",
+      attrs: (class: if edit { "sidenote edit" } else { "sidenote" }),
+      { head; body },
+    )
   } else {
     block(
       width: 100%,
       inset: (x: 10pt, y: 8pt),
       radius: 4pt,
-      fill: luma(246),
-      stroke: (left: 2pt + luma(200)),
-      text(size: 0.88em, body),
+      fill: if edit { rgb("#eef2f7") } else { luma(246) },
+      stroke: (left: 2pt + if edit { rgb("#6f8fb8") } else { luma(200) }),
+      text(size: 0.88em, { head; body }),
     )
   }
 }
+
+// A dated edit callout = a blue sidenote stamped "Edit". Just `aside` with the
+// flag set, so it shares the same layout, font, and responsive behavior.
+//   #edit[Reworked this section.]
+//   #edit(date: "22 Jun 2026")[Reworked this section.]
+#let edit(body, date: none) = aside(body, edit: true, date: date)
 
 // Draw a fully-connected neural net. `layers` is a list whose entries are
 // either an integer (draw that many neurons) or a dict (head: h, tail: t) that
@@ -247,15 +273,7 @@
   _article(
     {
       html.elem("h1", attrs: (class: "title"))[#_input("title")]
-      // The " · N min read" suffix is appended to this byline by build.py, since
-      // it depends on the rendered content.
-      html.elem("p", attrs: (class: "byline"), {
-        let modified = _input("modified")
-        _input("date")
-        if modified != "" { [ · updated #modified] }
-        [ · ]
-        _input("author")
-      })
+      html.elem("p", attrs: (class: "byline"))[#_input("date") · #_input("author")]
     },
     doc,
   )

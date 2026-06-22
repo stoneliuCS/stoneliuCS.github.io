@@ -86,15 +86,6 @@ def stitch_inline_math(html: str) -> str:
     return _INLINE_MATH.sub(lambda m: " " + _align_inline(m.group(1)) + " ", html)
 
 
-def last_modified(src: Path) -> str:
-    """Date (YYYY-MM-DD) of the last git commit touching the file, '' if none."""
-    proc = subprocess.run(
-        ["git", "log", "-1", "--format=%cs", "--", str(src)],
-        capture_output=True, text=True, cwd=ROOT,
-    )
-    return proc.stdout.strip() if proc.returncode == 0 else ""
-
-
 def inject_head(html: str, title: str) -> str:
     extra = (
         f"    <title>{title}</title>\n"
@@ -142,26 +133,50 @@ def read_post_meta(src: Path) -> dict:
         if "found 0" in proc.stderr:
             hint = (
                 "\n  -> add a metadata block at the top:\n"
-                '     #metadata((title: \"...\", date: \"YYYY-MM-DD\", '
-                'section: \"notes\"|\"thoughts\")) <post-meta>'
+                '     #metadata((title: \"...\", date: \"YYYY-MM-DD\")) <post-meta>'
+                "\n     (section/topic come from the folder, not metadata)"
             )
         raise RuntimeError(f"{src.name}: could not read <post-meta>{hint}\n{proc.stderr.strip()}")
     return json.loads(proc.stdout)
 
 
+def post_location(src: Path) -> tuple:
+    """Derive (section, topic) from a post's folder layout, NOT its metadata:
+        posts/<section>/<file>.typ            -> (section, None)   standalone
+        posts/<section>/<topic>/<file>.typ    -> (section, topic)  grouped
+    The topic is the folder name verbatim (so it can read e.g. "Deep Learning")."""
+    parts = src.relative_to(POSTS).parts  # (..., "file.typ")
+    folders = parts[:-1]
+    if len(folders) == 0:
+        raise RuntimeError(
+            f"{src.name}: a post must live under a section folder "
+            f"(posts/notes/... or posts/thoughts/...)"
+        )
+    section = folders[0]
+    if section not in ("thoughts", "notes"):
+        raise RuntimeError(
+            f"{src.name}: section folder must be 'notes' or 'thoughts', got {section!r}"
+        )
+    if len(folders) == 1:
+        return section, None
+    if len(folders) == 2:
+        return section, folders[1]
+    raise RuntimeError(
+        f"{src.name}: posts nest at most one topic folder deep "
+        f"(got {'/'.join(folders)})"
+    )
+
+
 def post_entry(src: Path, meta: dict) -> dict:
     """Expand a post's metadata into a full manifest entry, deriving the
     mechanical fields (url, output path, both date formats) so they can't
-    drift out of sync."""
+    drift out of sync. section/topic come from the folder path (post_location),
+    not metadata."""
     try:
         date = datetime.date.fromisoformat(meta["date"])
     except (KeyError, ValueError):
         raise RuntimeError(f"{src.name}: <post-meta> needs a date as YYYY-MM-DD")
-    section = meta.get("section")
-    if section not in ("thoughts", "notes"):
-        raise RuntimeError(
-            f'{src.name}: <post-meta> section must be "thoughts" or "notes", got {section!r}'
-        )
+    section, topic = post_location(src)
 
     slug = meta.get("slug") or meta["title"].replace(" ", "-")
     out_rel = f"{date:%Y/%m/%d}/{slug}.html"
@@ -176,27 +191,19 @@ def post_entry(src: Path, meta: dict) -> dict:
         "date_list": f"{date:%B} {date.day}, {date:%Y}",
         "_date": date.isoformat(),
     }
-    if "topic" in meta:
-        entry["topic"] = meta["topic"]
+    if topic is not None:
+        entry["topic"] = topic
     if meta.get("description"):
         entry["description"] = meta["description"]
     if meta.get("featured"):
         entry["featured"] = True
-    # "Last updated" from git: shown only when later than the publish date.
-    mod = last_modified(src)
-    if mod:
-        try:
-            mdate = datetime.date.fromisoformat(mod)
-            if mdate > date:
-                entry["modified_meta"] = f"{mdate:%d %b %Y}"
-        except ValueError:
-            pass
     return entry
 
 
 def discover_posts() -> list:
-    """Build the post manifest from typst/posts/*.typ, newest first."""
-    posts = [post_entry(src, read_post_meta(src)) for src in sorted(POSTS.glob("*.typ"))]
+    """Build the post manifest from typst/posts/**/*.typ (section/topic come from
+    the folder each post lives in; see post_location), newest first."""
+    posts = [post_entry(src, read_post_meta(src)) for src in sorted(POSTS.rglob("*.typ"))]
     posts.sort(key=lambda p: p["_date"], reverse=True)
     POST_MANIFEST.write_text(json.dumps(posts, indent=2) + "\n")
     return posts
@@ -249,7 +256,6 @@ def build() -> None:
                 "title": p["title"],
                 "date": p["date_meta"],
                 "author": p["author"],
-                "modified": p.get("modified_meta", ""),
             },
         )
         emit(p["out"], html, p["title"])

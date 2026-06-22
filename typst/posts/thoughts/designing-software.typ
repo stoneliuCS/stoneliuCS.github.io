@@ -1,7 +1,6 @@
 #metadata((
   title: "Designing Software",
   date: "2025-06-07",
-  section: "thoughts",
 )) <post-meta>
 
 == learning systematic program design
