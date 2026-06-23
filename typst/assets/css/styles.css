@@ -72,6 +72,41 @@ ul.toc ul {
 ul.toc li { margin: 0.4rem 0; }
 ul.toc p { margin: 0; }
 ul.toc strong { font-style: italic; font-weight: 600; }
+
+/* In-article table of contents (#toc()), auto-built from the headings. */
+.paper nav.toc-box {
+  margin: 1.5rem 0 2.5rem;
+  padding: 0.8rem 1.2rem;
+  background: #f7f5ec;
+  border: 1px solid #e4dfca;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+.paper nav.toc-box .toc-title {
+  margin: 0 0 0.4rem;
+  font-style: italic;
+  font-weight: 600;
+}
+.paper nav.toc-box ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+.paper nav.toc-box > ol { counter-reset: toc; list-style: none; padding-left: 0.2rem; }
+.paper nav.toc-box > ol > li {
+  counter-increment: toc;
+  margin: 0.25rem 0;
+}
+.paper nav.toc-box > ol > li::before {
+  content: counter(toc) ". ";
+  color: #8a7f55;
+}
+.paper nav.toc-box ol ol { list-style: lower-alpha; color: #555; }
+/* Typst wraps a list item's text in <p> when the item also holds a nested list;
+   keep it inline so the counter stays on the same line as the link. */
+.paper nav.toc-box li p { display: inline; margin: 0; }
+.paper nav.toc-box a { text-decoration: none; }
+.paper nav.toc-box a:hover { text-decoration: underline; }
 /* One-line italic blurb under a listed article (from <post-meta> description). */
 ul.toc .desc {
   display: block;

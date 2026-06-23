@@ -18,6 +18,7 @@
 #home-photo("/assets/img/stone.jpeg", alt: "Stone Liu", caption: [a photo of me!])
 == Currently Reading
 - #emph[Project Hail Mary] -- Andy Weir
+- #emph[Meditations] -- Marcus Aurelius
 
 == Finished Reading
 - #emph[Non-Things: Upheaval in the Lifeworld] -- Byung-Chul Han

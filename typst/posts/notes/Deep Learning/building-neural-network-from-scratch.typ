@@ -5,7 +5,8 @@
   featured: true,
 )) <post-meta>
 
-#import "../../../lib/web.typ": aside, draw-net
+#import "../../../lib/web.typ": aside
+#import "../../../lib/drawings.typ": draw-net
 #import "@preview/cetz:0.3.4"
 #import "@preview/cetz-plot:0.1.1": plot
 #import "@preview/neural-netz:0.3.0": *
