@@ -3,7 +3,6 @@
 #metadata((
   title: "Forward Automatic Differentiation",
   date: "2026-06-16",
-  featured: true,
 )) <post-meta>
 
 == The Chain Rule
