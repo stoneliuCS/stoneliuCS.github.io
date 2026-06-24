@@ -103,6 +103,40 @@
   }
 }
 
+// A "bookmark": a marker that the article pauses here while you go explore a
+// related topic (a WIP / continuation flag). `body` says where you're headed (and
+// can hold a #link to the related post); `date` is shown in the header. Web ->
+// <div class="bookmark">; standalone PDF -> a styled block.
+//   #bookmark(date: "24 Jun 2026")[
+//     Pausing here to first understand convolutions — see #link("/...")[this post].
+//   ]
+#let bookmark(body, date: none) = {
+  if _input("web") == "true" {
+    html.elem("div", attrs: (class: "bookmark"), {
+      html.elem("p", attrs: (class: "bookmark-meta"), {
+        [Bookmark — paused here]
+        if date != none { [ · #date] }
+      })
+      html.elem("div", attrs: (class: "bookmark-body"), body)
+    })
+  } else {
+    block(
+      width: 100%,
+      inset: (x: 10pt, y: 8pt),
+      radius: 4pt,
+      fill: rgb("#fbf3df"),
+      stroke: (left: 2pt + rgb("#c99a2e")),
+      {
+        text(size: 0.78em, weight: "bold", fill: rgb("#9a7a1e"))[
+          BOOKMARK — PAUSED HERE#if date != none [ · #date]
+        ]
+        parbreak()
+        text(size: 0.95em, body)
+      },
+    )
+  }
+}
+
 // Wrap document content in <article class="paper">, applying the show rules
 // that translate plain-Typst layout content into web-friendly output. The
 // rules must be active where `doc` is realized, so the wrapping happens here.

@@ -260,6 +260,27 @@ ul.toc .desc {
 .paper .definition .def-body p:first-child { margin-top: 0; }
 .paper .definition .def-body p:last-child { margin-bottom: 0; }
 
+/* ---- Bookmark: a "paused here to explore a related topic" / WIP marker ---- */
+.paper .bookmark {
+  margin: 1.6rem 0;
+  padding: 0.7rem 1rem;
+  background: #fbf3df;
+  border: 1px solid #ecdcae;
+  border-left: 3px solid #c99a2e;
+  border-radius: 4px;
+}
+.paper .bookmark .bookmark-meta {
+  margin: 0 0 0.4rem;
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #9a7a1e;
+}
+.paper .bookmark .bookmark-body { margin: 0; }
+.paper .bookmark .bookmark-body p:first-child { margin-top: 0; }
+.paper .bookmark .bookmark-body p:last-child { margin-bottom: 0; }
+
 /* math & diagrams are the only embedded SVG (build.py aligns inline ones) */
 .math-block {
   text-align: center;

@@ -1,9 +1,9 @@
 #metadata((
-  title: "Using CNNs to recognize Handwritten Math (WIP)",
+  title: "Using CNNs to recognize Handwritten Math",
   date: "2026-06-23",
 )) <post-meta>
 
-#import "../../../lib/web.typ": aside, toc
+#import "../../../lib/web.typ": aside, bookmark, toc
 #import "../../../lib/drawings.typ": draw-arrays
 
 #toc()
@@ -72,7 +72,17 @@ A CNN is comprised of three types of layers. These are the convolutional layers,
 2. *Pooling Layer* downsamples on the input which in turn reduces the number of parameters being passed into the activations.
 3. *Fully Connected Layers* will produce class scores (if for classification) from the activations, similar to the standard feedforward neural networks.
 
-== Proof of Concept
+#aside[
+  I was originally going to go with #link("https://arxiv.org/abs/2201.03545")[ConvNext], but that is a more generalized pretrained model.
+]
+== Building a Classifier
+The task of recognizing handwritten math is a complicated task, since mathematical notation can devolve into more than what is this sequence of characters, I'm going to start out with fine tuning a current pre-trained model called #link("https://arxiv.org/abs/2203.02378")[Document Image Transformer]. Lets examine and read what this type of model does.
+
+#bookmark(
+  date: "Wednesday June 24",
+)[Paused here! I realized that I have never read what the heck even is a transformer!]
+
+=== Proof of Concept
 To give this a go, I want to first pretrain a convolutional neural network on the Math Writing dataset. The idea is to first #link("https://en.wikipedia.org/wiki/Rasterisation")[rasterize] the _inkml_ files into two dimensional grayscale images to be passed as input to our neural network. This is essentially a bigger version of the MNIST classifier that I built previously. Only this time our input is $128 times 128$ and our output contains hundreds of potential classes to mark the symbols.
 
 #figure(
