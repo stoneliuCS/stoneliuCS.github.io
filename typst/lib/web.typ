@@ -15,6 +15,7 @@
   (name: "stone", link: "/"),
   (name: "thoughts", link: "/thoughts.html"),
   (name: "notes", link: "/notes.html"),
+  (name: "explore", link: "/explore.html"),
 )
 
 #let nav(current) = html.elem("nav", nav-items.map(item => {
@@ -136,6 +137,23 @@
     )
   }
 }
+
+// Resolve a post's slug to its full URL (looked up from the manifest at build
+// time), with an optional #section anchor. Lets posts cross-reference by short
+// slug instead of the dated path, so links don't break if a date/path changes.
+//   #post-url("informatons")                      -> "/2026/06/18/informatons.html"
+//   #post-url("nn", anchor: "backpropogation")    -> ".../...#backpropogation"
+#let post-url(slug, anchor: none) = {
+  let hits = json("/_posts.json").filter(p => p.at("slug", default: none) == slug)
+  if hits.len() == 0 {
+    panic("link-post: no post with slug '" + slug + "'")
+  }
+  hits.first().url + if anchor != none { "#" + anchor } else { "" }
+}
+
+// Link to another post by slug: #link-post("informatons")[Non-Things ...]
+// Deep-link to a section: #link-post("nn", anchor: "backpropogation")[backprop]
+#let link-post(slug, body, anchor: none) = link(post-url(slug, anchor: anchor), body)
 
 // Wrap document content in <article class="paper">, applying the show rules
 // that translate plain-Typst layout content into web-friendly output. The
@@ -332,3 +350,16 @@
 
 #let web-thoughts() = _index("thoughts", "Thoughts")
 #let web-notes() = _index("notes", "Notes")
+
+// The Interlinked page: an interactive force-directed graph of how posts
+// reference each other. The graph data (/_graph.json) and the renderer
+// (/assets/js/interlinked.js) are produced/served by build.py; this just lays
+// out the container + script. (Web-only; never compiled to PDF.)
+#let web-interlinked() = {
+  nav(_input("current"))
+  html.elem("div", attrs: (id: "graph", class: "graph-wrap"))[]
+  html.elem(
+    "script",
+    attrs: (src: "/assets/js/interlinked.js", defer: "defer"),
+  )[]
+}

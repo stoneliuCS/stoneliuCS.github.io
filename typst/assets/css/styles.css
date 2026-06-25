@@ -284,6 +284,22 @@ ul.toc .desc {
 .paper .bookmark .bookmark-body p:first-child { margin-top: 0; }
 .paper .bookmark .bookmark-body p:last-child { margin-bottom: 0; }
 
+/* ---- Interlinked: reference graph page (blends into the page, no chrome) ---- */
+.graph-wrap {
+  width: 100%;
+  background: transparent;
+}
+/* Fade the canvas toward its edges so nodes dissolve into the page instead of
+   being clipped at a hard rectangular border when zooming/panning. */
+.graph-wrap canvas {
+  display: block;
+  touch-action: none; /* the canvas handles its own pan/pinch gestures */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse at center, #000 62%, transparent 100%);
+}
+
 /* math & diagrams are the only embedded SVG (build.py aligns inline ones) */
 .math-block {
   text-align: center;

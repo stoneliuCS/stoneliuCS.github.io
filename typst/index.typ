@@ -1,4 +1,4 @@
-#import "/lib/web.typ": web-featured, home-photo
+#import "/lib/web.typ": web-featured, home-photo, link-post
 
 = stone liu
 
@@ -21,7 +21,7 @@
 - #emph[Meditations] -- Marcus Aurelius
 
 == Finished Reading
-- #emph[Non-Things: Upheaval in the Lifeworld] -- Byung-Chul Han
+- #link-post("informatons")[#emph[Non-Things: Upheaval in the Lifeworld] -- Byung-Chul Han]
 - #emph[Vita contemplativa] -- Byung-Chul Han
 - #emph[Man's Search for Meaning] -- Viktor E. Frankl
 - #emph[A Woman in the Polar Night] -- Christiane Ritter

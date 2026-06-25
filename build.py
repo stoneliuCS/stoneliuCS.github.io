@@ -210,6 +210,7 @@ def post_entry(src: Path, meta: dict) -> dict:
         "src": src.relative_to(TYPST).as_posix(),
         "out": out_rel,
         "url": "/" + out_rel,
+        "slug": slug,
         "title": meta["title"],
         "section": section,
         "author": meta.get("author", "Stone Liu"),
@@ -233,6 +234,43 @@ def discover_posts() -> list:
     posts.sort(key=lambda p: p["_date"], reverse=True)
     POST_MANIFEST.write_text(json.dumps(posts, indent=2) + "\n")
     return posts
+
+
+# An <a href> pointing at an internal page (home "/" or a "/…/x.html").
+# (The "#anchor" / query is stripped before matching.)
+_HREF = re.compile(r'<a[^>]+href="(/[^"#?]*(?:\.html)?)(?:[#?][^"]*)?"')
+_NAV = re.compile(r"<nav\b.*?</nav>", re.S)
+
+
+def build_graph(posts: list) -> None:
+    """Scan each page's compiled HTML for links to other pages and write the
+    reference graph (nodes = home + posts, directed edges = "A links to B") to
+    _site/_graph.json, consumed by the knowledge-graph renderer. The <nav> is
+    stripped first so the global nav links don't connect everything together."""
+    # The home page ("stone") is a node too; posts are the rest.
+    url_of = {"/"} | {p["url"] for p in posts}
+    nodes = [{"id": "/", "title": "stone", "section": "home"}]
+    nodes += [
+        {
+            "id": p["url"],
+            "title": p["title"],
+            "section": p["section"],
+            "categories": p.get("categories", []),
+        }
+        for p in posts
+    ]
+    pages = [("/", OUT / "index.html")] + [(p["url"], OUT / p["out"]) for p in posts]
+    edges, seen = [], set()
+    for src_url, path in pages:
+        html = _NAV.sub("", path.read_text())  # drop nav so only in-content links count
+        for href in _HREF.findall(html):
+            if href in url_of and href != src_url and (src_url, href) not in seen:
+                seen.add((src_url, href))
+                edges.append({"source": src_url, "target": href})
+    (OUT / "_graph.json").write_text(
+        json.dumps({"nodes": nodes, "links": edges}, indent=2) + "\n"
+    )
+    print(f"  (generated) -> _site/_graph.json ({len(nodes)} nodes, {len(edges)} links)")
 
 
 def build() -> None:
@@ -286,6 +324,15 @@ def build() -> None:
         )
         emit(p["out"], html, p["title"])
         print(f"  {p['src']} -> _site/{p['out']}")
+
+    # Interlinked: a reference graph of the posts, + its interactive page.
+    build_graph(posts)
+    html = compile_wrapper(
+        '#import "/lib/web.typ": web-interlinked\n#web-interlinked()\n',
+        {"current": "/explore.html"},
+    )
+    emit("explore.html", html, "explore")
+    print("  (generated) -> _site/explore.html")
 
     print(f"Built site into {OUT}")
 
