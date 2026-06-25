@@ -78,10 +78,6 @@ A CNN is comprised of three types of layers. These are the convolutional layers,
 == Building a Classifier
 The task of recognizing handwritten math is a complicated task, since mathematical notation can devolve into more than what is this sequence of characters, I'm going to start out with fine tuning a current pre-trained model called #link("https://arxiv.org/abs/2203.02378")[Document Image Transformer]. Lets examine and read what this type of model does.
 
-#bookmark(
-  date: "Wednesday June 24",
-)[Paused here! I realized that I have never read what the heck even is a transformer!]
-
 === Proof of Concept
 To give this a go, I want to first pretrain a convolutional neural network on the Math Writing dataset. The idea is to first #link("https://en.wikipedia.org/wiki/Rasterisation")[rasterize] the _inkml_ files into two dimensional grayscale images to be passed as input to our neural network. This is essentially a bigger version of the MNIST classifier that I built previously. Only this time our input is $128 times 128$ and our output contains hundreds of potential classes to mark the symbols.
 
@@ -99,3 +95,7 @@ def inkml_to_image_and_label(data_path: Path):
     return imgs, labels
 ```
 I have gone for image sizes of $128 times 128$ and a stroke size of $3$ pixels wide.
+
+#bookmark(
+  date: "Wednesday June 24",
+)[Taking a deeper dive into #link("/2026/06/25/What-are-Transformers.html")[Transformers] before continuing.]

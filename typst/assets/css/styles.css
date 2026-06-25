@@ -268,6 +268,9 @@ ul.toc .desc {
   border: 1px solid #ecdcae;
   border-left: 3px solid #c99a2e;
   border-radius: 4px;
+  /* match the annotation size of the other note boxes (asides), not body text */
+  font-size: 1.05rem;
+  line-height: 1.45;
 }
 .paper .bookmark .bookmark-meta {
   margin: 0 0 0.4rem;

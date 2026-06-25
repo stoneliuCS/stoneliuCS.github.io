@@ -60,8 +60,23 @@ POST_MANIFEST = TYPST / "_posts.json"
 # Typst HTML export splits a paragraph at every inline equation, emitting
 # <p>text</p><svg/><p>text</p>. Stitch those back into one paragraph so inline
 # math flows within the prose. Block equations live in <div class="math-block">
-# (preceded by <div>, not a bare <svg>), so they're left untouched.
-_INLINE_MATH = re.compile(r'</p>\s*(<svg class="typst-frame".*?</svg>)\s*<p>', re.S)
+# (a <div>, never a bare <svg> right after </p>), so they're left untouched.
+_INLINE_FRAME = r'<svg class="typst-frame".*?</svg>'
+# A real block element (block equations are <div class="math-block">; also
+# headings, lists, code, etc.). Used to tell "inline math ends a paragraph before
+# a block" apart from "inline math has more prose after it".
+_BLOCK_AHEAD = r"(?=\s*<(?:div|pre|ul|ol|h[1-6]|table|blockquote|figure|/(?:article|li|blockquote)))"
+# inline math between two paragraph fragments -> rejoin into one paragraph.
+_INLINE_MATH = re.compile(rf"</p>\s*({_INLINE_FRAME})\s*<p>", re.S)
+# inline math that genuinely ENDS a paragraph (a block follows) -> keep it inside
+# the preceding paragraph and re-close after it.
+_INLINE_MATH_BEFORE_BLOCK = re.compile(rf"</p>\s*({_INLINE_FRAME}){_BLOCK_AHEAD}", re.S)
+# inline math followed by more prose Typst failed to re-wrap -> drop the spurious
+# </p> so the paragraph flows on through the equation.
+_INLINE_MATH_TRAIL = re.compile(rf"</p>\s*({_INLINE_FRAME})", re.S)
+# inline math orphaned at a paragraph START (preceded by a block, not </p>)
+# -> fold it into the following paragraph.
+_INLINE_MATH_LEAD = re.compile(rf"({_INLINE_FRAME})\s*<p>", re.S)
 _SVG_HEIGHT = re.compile(r"height:\s*([\d.]+)em")
 
 # Inline-math SVGs carry no baseline, so they'd sit too high in the line. The
@@ -83,7 +98,17 @@ def _align_inline(svg: str) -> str:
 
 
 def stitch_inline_math(html: str) -> str:
-    return _INLINE_MATH.sub(lambda m: " " + _align_inline(m.group(1)) + " ", html)
+    # 1) inline math mid-paragraph: merge the two fragments back together.
+    html = _INLINE_MATH.sub(lambda m: " " + _align_inline(m.group(1)) + " ", html)
+    # 2) inline math that ends a paragraph right before a block: keep it in the
+    #    preceding paragraph and re-close after it.
+    html = _INLINE_MATH_BEFORE_BLOCK.sub(lambda m: " " + _align_inline(m.group(1)) + "</p>", html)
+    # 3) inline math with more prose after it (Typst dropped the wrapping <p>):
+    #    drop the spurious </p> so the paragraph flows on through the equation.
+    html = _INLINE_MATH_TRAIL.sub(lambda m: " " + _align_inline(m.group(1)), html)
+    # 4) inline math orphaned at a paragraph start (after a block): into next <p>.
+    html = _INLINE_MATH_LEAD.sub(lambda m: "<p>" + _align_inline(m.group(1)) + " ", html)
+    return html
 
 
 def inject_head(html: str, title: str) -> str:
@@ -173,7 +198,13 @@ def post_entry(src: Path, meta: dict) -> dict:
         raise RuntimeError(f"{src.name}: <post-meta> needs a date as YYYY-MM-DD")
     section, categories = post_location(src)
 
-    slug = meta.get("slug") or meta["title"].replace(" ", "-")
+    slug = meta.get("slug")
+    if not slug:
+        # Derive a URL-safe slug from the title: spaces -> hyphens, then drop any
+        # character that isn't alnum/hyphen (e.g. "?", "(", ")", ",") so the
+        # filename/URL can't break (a literal "?" would be read as a query string).
+        slug = re.sub(r"[^A-Za-z0-9-]", "", meta["title"].replace(" ", "-"))
+        slug = re.sub(r"-+", "-", slug).strip("-")
     out_rel = f"{date:%Y/%m/%d}/{slug}.html"
     entry = {
         "src": src.relative_to(TYPST).as_posix(),
