@@ -230,7 +230,8 @@ def post_entry(src: Path, meta: dict) -> dict:
 def discover_posts() -> list:
     """Build the post manifest from typst/posts/**/*.typ (section/topic come from
     the folder each post lives in; see post_location), newest first."""
-    posts = [post_entry(src, read_post_meta(src)) for src in sorted(POSTS.rglob("*.typ"))]
+    srcs = [s for s in sorted(POSTS.rglob("*.typ")) if s.name != "index.typ"]
+    posts = [post_entry(src, read_post_meta(src)) for src in srcs]
     posts.sort(key=lambda p: p["_date"], reverse=True)
     POST_MANIFEST.write_text(json.dumps(posts, indent=2) + "\n")
     return posts
@@ -293,21 +294,21 @@ def build() -> None:
         emit(pg["out"], html, pg["title"])
         print(f"  {pg['src']} -> _site/{pg['out']}")
 
-    # Thoughts index (standalone takes) — generated from the manifest.
-    html = compile_wrapper(
-        '#import "/lib/web.typ": web-thoughts\n#web-thoughts()\n',
-        {"current": "/thoughts.html"},
-    )
-    emit("thoughts.html", html, "thoughts")
-    print("  (generated) -> _site/thoughts.html")
-
-    # Notes index (topic-grouped) — generated from the manifest.
-    html = compile_wrapper(
-        '#import "/lib/web.typ": web-notes\n#web-notes()\n',
-        {"current": "/notes.html"},
-    )
-    emit("notes.html", html, "notes")
-    print("  (generated) -> _site/notes.html")
+    # Section index pages: each section folder's own index.typ controls how its
+    # page (/notes.html, /thoughts.html) looks. It calls `section-list()` to drop
+    # in the post listing; everything else is the author's to lay out.
+    for section in ("thoughts", "notes"):
+        idx = POSTS / section / "index.typ"
+        if not idx.exists():
+            raise RuntimeError(f"missing section page: posts/{section}/index.typ")
+        html = compile_wrapper(
+            f'#import "/lib/web.typ": web-page\n'
+            f"#show: web-page\n"
+            f'#include "/{idx.relative_to(TYPST).as_posix()}"\n',
+            {"current": f"/{section}.html", "section": section},
+        )
+        emit(f"{section}.html", html, section)
+        print(f"  posts/{section}/index.typ -> _site/{section}.html")
 
     # Articles.
     for p in posts:

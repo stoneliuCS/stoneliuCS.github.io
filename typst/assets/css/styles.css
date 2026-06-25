@@ -43,6 +43,20 @@ a { color: inherit; }
 .current { color: #aaa; }
 .underlined { text-decoration: underline; }
 
+/* Content links, Tufte-style: same ink as the text (no colour), with a clean
+   underline that skips letter descenders and sits a little lower. Hover thickens
+   it. (Nav keeps its own inherited style.) */
+.paper a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-skip-ink: auto;
+  text-underline-offset: 0.16em;
+}
+.paper a:hover {
+  text-decoration-thickness: 2px;
+}
+
 nav {
   font-size: 1.1rem;
   margin-bottom: 3rem;

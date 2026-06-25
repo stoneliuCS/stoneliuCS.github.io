@@ -341,15 +341,17 @@
 
 // An index page: every folder under the section becomes a (possibly nested)
 // category bullet; posts directly in the section folder are standalone bullets.
-#let _index(section-name, title) = {
-  let posts = json("/_posts.json").filter(p => _section(p) == section-name)
-  nav(_input("current"))
-  html.elem("h1", attrs: (class: "underlined"))[#title]
+// The post listing for the current section (read from --input by build.py),
+// grouped by topic folder. Call this from a section's own index.typ — e.g.
+// posts/notes/index.typ — to drop the list in wherever the author wants it:
+//   #import "../../lib/web.typ": section-list
+//   = Notes
+//   #section-list()
+#let section-list() = {
+  let section = _input("section")
+  let posts = json("/_posts.json").filter(p => _section(p) == section)
   html.elem("ul", attrs: (class: "toc"), _render-node(_build-tree(posts)))
 }
-
-#let web-thoughts() = _index("thoughts", "Thoughts")
-#let web-notes() = _index("notes", "Notes")
 
 // The Interlinked page: an interactive force-directed graph of how posts
 // reference each other. The graph data (/_graph.json) and the renderer
