@@ -4,9 +4,10 @@
   date: "2026-06-25",
 )) <post-meta>
 
-#import "../../../lib/web.typ": aside, bookmark, toc
+#import "@preview/cetz:0.5.2"
+#import "../../../../lib/web.typ": aside, bookmark, link-post, toc
 
-To quote *3Blue1Brown*, a transformer is a just a very specific type of _neural network_. When prompting a _Large Language Model_, it will attempt to find the token that is most likely to occur to finish the sentence. Machine Learning is a very flexible approach to building a function, it doesn't require a specific set of procedures _(snippets of code)_ to produce an output, instead it has a bunch of *tunable parameters*. I interpret these to be the weights and biases for a deep learning model. In the case of #link("/2026/06/22/Spam-or-Ham.html")[supervised learning], we feed the network a bunch of inputs and their corresponding _correct_ outputs and use an algorithm called #link("/2026/06/17/Building-a-Neural-Network-from-scratch-in-Go.html#backpropogation")[backpropogation] to tune the weights and biases in such a way that the deep learning model can gradually minimize the error of its predictions.
+To quote *3Blue1Brown*, a transformer is a just a very specific type of _neural network (Deep Learning)_. When prompting a _Large Language Model_, it will attempt to find the token that is most likely to occur to finish the sentence. Machine Learning is a very flexible approach to building a function, it doesn't require a specific set of procedures _(snippets of code)_ to produce an output, instead it has a bunch of *tunable parameters*. I interpret these to be the weights and biases for a deep learning model. In the case of #link("/2026/06/22/Spam-or-Ham.html")[supervised learning], we feed the network a bunch of inputs and their corresponding _correct_ outputs and use an algorithm called #link("/2026/06/17/Building-a-Neural-Network-from-scratch-in-Go.html#backpropogation")[backpropogation] to tune the weights and biases in such a way that the deep learning model can gradually minimize the error of its predictions.
 
 == Tokenization and Embeddings
 Say we want to process a chunk of text like this
@@ -27,7 +28,56 @@ $ python3 transformer.py
 ('boats', 0.7984598278999329),
 ('waters', 0.7883374094963074)]
 ```
-We get words that are sort of semanatically similar to them. But how does this even work? The current model that I am using represents each vector embedding in a $50$ dimensional space which is of course impossible to visualize. But we can get a sense _geometrically_ with the #link("https://en.wikipedia.org/wiki/Dot_product")[dot product]. Remember, the dot product of two vectors encodes a sense of _directionality_ between them. If two vectors are facing the same direction then their dot product will be positive, if they are perpendicular then their dot product would be close to or equal to zero. If they are facing opposite directions their dot product would be negative. Take for example the embeddings for the words _"sushi", "japan", "germany"_. What would happen if we were to say take their dot products? Well sushi is from japan and not from germany so I would assume that in this $50$ dimensional space encoding the semantics of each word, the dot product between "sushi" and "japan" would be greater than "germany" and "sushi".
+We get words that are sort of semanatically similar to them. But how does this even work? The current model that I am using represents each vector embedding in a $50$ dimensional space which is of course impossible to visualize. But we can get a sense _geometrically_ with the #link("https://en.wikipedia.org/wiki/Dot_product")[dot product]. Remember, the dot product of two vectors encodes a sense of _directionality_ between them. If two vectors are facing the same direction then their dot product will be positive, if they are perpendicular then their dot product would be close to or equal to zero.
+
+#figure(grid(
+  columns: 3,
+  gutter: 1.5cm,
+  cetz.canvas({
+    import cetz.draw: *
+
+    line((0, 0), (5, 0))
+    line((0, 0), (0, 3))
+
+    stroke(1pt)
+
+    line((0, 0), (1, 2), mark: (end: ">"))
+    line((0, 0), (2, 0.5), mark: (end: ">"))
+
+    content((3, 1.5), [Positive Dot Product])
+  }),
+
+  cetz.canvas({
+    import cetz.draw: *
+
+    line((0, 0), (5, 0))
+    line((0, 0), (0, 3))
+
+    stroke(1pt)
+
+    line((0, 0), (1.5, 0.4), mark: (end: ">"))
+    line((0, 0), (-1.5, 0.25), mark: (end: ">"))
+
+    content((3, 1.5), [Negative Dot Product])
+  }),
+
+  cetz.canvas({
+    import cetz.draw: *
+
+    line((0, 0), (5, 0))
+    line((0, 0), (0, 3))
+
+    stroke(1pt)
+
+    line((0, 0), (2.5, 1), mark: (end: ">"))
+    line((0, 0), (-1, 2.5), mark: (end: ">"))
+
+    content((3, 1.5), [Zero Dot Product])
+  }),
+))
+
+
+If they are facing opposite directions their dot product would be negative. Take for example the embeddings for the words _"sushi", "japan", "germany"_. What would happen if we were to say take their dot products? Well sushi is from japan and not from germany so I would assume that in this $50$ dimensional space encoding the semantics of each word, the dot product between "sushi" and "japan" would be greater than "germany" and "sushi".
 ```bash
 python3 transformer.py # E(Sushi) * E(Germany)
 -0.038159132
@@ -176,3 +226,6 @@ def attention_block(prompt: str, embedding_model, W_Q, W_K, W_V) -> str:
         softmax((Q @ K.T) / np.sqrt(QUERY_DIMENSION)) @ V
     )  # The attention block!
 ```
+#bookmark(date: "June 27 2026")[
+  Exploring the world of language models starting #link("/2026/06/27/n-gram-language-model.html")[here!]
+]
