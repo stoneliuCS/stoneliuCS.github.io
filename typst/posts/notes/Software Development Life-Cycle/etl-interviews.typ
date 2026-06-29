@@ -1,7 +1,7 @@
 #import "@preview/diagraph:0.3.7"
 
 #metadata((
-  title: "ETL Data Engineering Prep",
+  title: "ETL and Data Engineering",
   date: "2026-06-16",
   slug: "etl-interviews",
 )) <post-meta>
