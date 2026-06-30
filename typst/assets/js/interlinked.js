@@ -30,6 +30,15 @@
     nbr.get(l.target.id).add(l.source.id);
   });
 
+  // sub-category membership: full path as key -> set of node ids
+  const subGroup = new Map();
+  for (const n of nodes) {
+    const key = (n.categories || []).join("/");
+    if (!key) continue;
+    if (!subGroup.has(key)) subGroup.set(key, new Set());
+    subGroup.get(key).add(n.id);
+  }
+
   const canvas = document.createElement("canvas");
   wrap.appendChild(canvas);
   const ctx = canvas.getContext("2d");
@@ -177,7 +186,13 @@
     ctx.save();
     ctx.translate(ox, oy);
     ctx.scale(scale, scale);
-    const active = hover ? new Set([hover.id, ...nbr.get(hover.id)]) : null;
+    const active = hover
+      ? new Set([
+          hover.id,
+          ...nbr.get(hover.id),
+          ...(subGroup.get((hover.categories || []).join("/")) || new Set()),
+        ])
+      : null;
 
     for (const l of links) {
       const a = l.source,
@@ -274,6 +289,24 @@
       ctx.fillStyle = ethereal ? "#6b7c9a" : "#222";
       ctx.fillText(hover.title, tx, ty);
     }
+
+    // Draw group labels at top of clusters (on top of everything)
+    ctx.textAlign = "center";
+    ctx.font = "italic 14px et-book, Palatino, Georgia, serif";
+    for (const k in groupMembers) {
+      const arr = groupMembers[k];
+      if (k === "thoughts" || k === "home") continue;
+      if (hover) continue;
+      let cx = 0, minY = Infinity;
+      for (const n of arr) {
+        cx += n.x;
+        if (n.y < minY) minY = n.y;
+      }
+      cx /= arr.length;
+      ctx.fillStyle = "#111";
+      ctx.fillText(k, cx, minY - 20);
+    }
+
     ctx.restore();
   }
 

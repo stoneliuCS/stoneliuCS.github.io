@@ -4,13 +4,16 @@
   date: "2026-06-27",
   slug: "n-gram-language-model",
 )) <post-meta>
-#import "../../../../lib/web.typ": aside
+#import "../../../../lib/web.typ": aside, update
 #aside[
   Following Ch 2 and 3 of #link("https://web.stanford.edu/~jurafsky/slp3/")[Speech and Language Processing]!
 ]
 
 == What is a word?
-Really and seriously, what is a word? Is a word simple a collection of characters spaced out by spaces? But what about other languages that have really short words like _Chinese_ or words in _Turkish_ that are really long. What about things that we don't really consider words like punctuation, commas, and exclaimations? When we speak we usually put some sort of filler word like _ums_ or _uhs_. When training a language model, we typically don't include these #link("https://en.wikipedia.org/wiki/Filler_(linguistics)")[Fillers]. If we consider the number of words in a language to be $V$ and the number of word instances to be $N$ then their relationship can be found to be
+Really and seriously, what is a word? Are words simply a collection of characters spaced out by spaces/seperators? But what about other languages that have really short words like _Chinese_ or words in _Turkish_ that are really long. What about things that we don't really consider are words like punctuation, commas, and exclaimations? When we speak we usually put some sort of filler word like _ums_ or _uhs_. When training a language model, we typically don't include these #link("https://en.wikipedia.org/wiki/Filler_(linguistics)")[Fillers]. If we consider the number of words in a language $V$ and the number of word instances to be $N$ then their relationship can be found to be
+#aside[
+  Word instances are the _unique_ words found in a corpus.
+]
 $
   |V| = k N^beta "where" \
   k, beta > 0 "and" 0 < beta < 1
@@ -48,4 +51,19 @@ If we want to be able to know what is the probability of the word _"blue"_ given
 $
   Pr("blue" | "Roses are Red, Violets are")
 $
-A really simple way to predict this probability _(given a large enough training corpus)_ is to literally count the occurences of this sentence and check also the occurrences of the sentence _"Roses are Red, Violets are Blue"_. This is obviously not feasible with arbitrary sentences, words are _emergent_ and we can easily produce new sentences that likely have never been said in the history of humanity.
+A really simple way to predict this probability _(given a large enough training corpus)_ is to literally count the occurences of this sentence and check also the occurrences of the sentence _"Roses are Red, Violets are Blue"_. This is obviously not feasible with arbitrary sentences, words are _emergent_ and we can easily produce new sentences that likely have never been said in the history of humanity if we so choose to.
+#update(date: "June 30th, 2026")[
+  I have finished a small tangent exploring a problem _aggressive cows_... I am back!
+]
+Picking back up where we left off, we can represent a sequence of $n$ words as just $w_1 dots w_n$. We can represent the probability of a particular word _(in this case "the")_ in a sequence of words occurring to be $Pr(X_i = "the")$. Naturally it follows that the joint probability of a sequence of words is to be represented as such...
+$
+  Pr(X_1 = w_1, X_2 = w_2, dots, X_n = w_n)
+$
+There are a few ways to compute this probability, but neither are really appealing. The chain rule of probability involes computing a bunch of conditional probabilities together which isn't very practical. We can however make an assumption to give an approximate probability. That is we can assume the _markov assumption_. That is, instead of computing this monstrosity:
+$
+  Pr(X_n | X_(1 : n - 1)) = Pr("blue" | "Roses are Red, Violets are")
+$
+We can approximate it by assuming that each word in the sequence only depends only the previous word.
+$
+  Pr(X_n | X_(1 : n - 1)) approx Pr(X_n | X_(n - 1)) = Pr("blue" | "are")
+$
