@@ -15,7 +15,6 @@
   (name: "stone", link: "/"),
   (name: "thoughts", link: "/thoughts.html"),
   (name: "notes", link: "/notes.html"),
-  (name: "explore", link: "/explore.html"),
 )
 
 #let nav(current) = html.elem("nav", nav-items.map(item => {
@@ -39,7 +38,7 @@
 //   posts/<section>/<topic>/<file>.typ  -> #import "../../../lib/web.typ": aside
 // `edit: true` turns it into a dated "edit" note: same sidenote layout/size,
 // tinted blue, with an "Edit · <date>" header. `edit(...)` below is the alias.
-#let aside(body, edit: false, date: none) = {
+#let aside(body, edit: false, date: none, variant: none) = {
   let head = if edit {
     if _input("web") == "true" {
       html.elem("p", attrs: (class: "edit-meta"), {
@@ -53,10 +52,12 @@
       parbreak()
     }
   }
+  let classes = if edit { "sidenote edit" } else { "sidenote" }
+  if variant != none { classes = classes + " " + variant }
   if _input("web") == "true" {
     html.elem(
       "aside",
-      attrs: (class: if edit { "sidenote edit" } else { "sidenote" }),
+      attrs: (class: classes),
       { head; body },
     )
   } else {

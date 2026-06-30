@@ -253,10 +253,9 @@ def build_graph(posts: list) -> None:
     reference graph (nodes = home + posts, directed edges = "A links to B") to
     _site/_graph.json, consumed by the knowledge-graph renderer. The <nav> is
     stripped first so the global nav links don't connect everything together."""
-    # The home page ("stone") is a node too; posts are the rest.
-    url_of = {"/"} | {p["url"] for p in posts}
-    nodes = [{"id": "/", "title": "stone", "section": "home"}]
-    nodes += [
+    # Posts are the nodes; home is not included in the graph.
+    url_of = {p["url"] for p in posts}
+    nodes = [
         {
             "id": p["url"],
             "title": p["title"],
@@ -265,7 +264,7 @@ def build_graph(posts: list) -> None:
         }
         for p in posts
     ]
-    pages = [("/", OUT / "index.html")] + [(p["url"], OUT / p["out"]) for p in posts]
+    pages = [(p["url"], OUT / p["out"]) for p in posts]
     edges, seen = [], set()
     for src_url, path in pages:
         html = _NAV.sub("", path.read_text())  # drop nav so only in-content links count
@@ -331,14 +330,8 @@ def build() -> None:
         emit(p["out"], html, p["title"])
         print(f"  {p['src']} -> _site/{p['out']}")
 
-    # Interlinked: a reference graph of the posts, + its interactive page.
+    # Interlinked: a reference graph of the posts.
     build_graph(posts)
-    html = compile_wrapper(
-        '#import "/lib/web.typ": web-interlinked\n#web-interlinked()\n',
-        {"current": "/explore.html"},
-    )
-    emit("explore.html", html, "explore")
-    print("  (generated) -> _site/explore.html")
 
     print(f"Built site into {OUT}")
 

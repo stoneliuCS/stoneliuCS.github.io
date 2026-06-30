@@ -38,10 +38,7 @@
     H = 0;
   function resize() {
     W = wrap.clientWidth;
-    // fill the viewport from the graph's top down to the bottom, so zoomed/panned
-    // nodes have room and rarely reach the (faded) edges
-    const top = wrap.getBoundingClientRect().top;
-    H = Math.max(480, Math.round(window.innerHeight - top - 16));
+    H = window.innerHeight;
     canvas.width = W * DPR;
     canvas.height = H * DPR;
     canvas.style.width = W + "px";
@@ -300,8 +297,12 @@
       drag.vx = drag.vy = 0;
       dragMoved = true;
     } else if (pan) {
-      ox = pan.ox + (px - pan.sx); // drag empty space -> pan the whole graph
-      oy = pan.oy + (py - pan.sy);
+      const newOx = pan.ox + (px - pan.sx);
+      const newOy = pan.oy + (py - pan.sy);
+      // allow dragging until graph is almost fully off-screen
+      const pad = 80;
+      ox = Math.max(-W + pad, Math.min(W - pad, newOx));
+      oy = Math.max(-H + pad, Math.min(H - pad, newOy));
       canvas.style.cursor = "grabbing";
     } else {
       hover = nodeAt(px, py);

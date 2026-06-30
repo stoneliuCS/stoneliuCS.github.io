@@ -62,6 +62,8 @@ nav {
   margin-bottom: 3rem;
   padding-bottom: 0.8rem;
   border-bottom: 1px solid rgba(17, 17, 17, 0.15);
+  position: relative;
+  z-index: 20;
 }
 nav a { margin-right: 0.7rem; }
 
@@ -198,7 +200,7 @@ ul.toc .desc {
 }
 .paper code {
   font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
-  font-size: inherit;
+  font-size-adjust: 0.52;
 }
 .paper pre * {
   font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
@@ -210,14 +212,9 @@ ul.toc .desc {
   box-sizing: border-box;
   float: right;
   clear: right;
-  width: 16rem;
-  /* Right-align the box to the content (navbar) right edge. The content column
-     is min(75vw, 1400px) wide and the text column is 42rem, so the gutter to its
-     right is that minus 42rem; a negative right margin of the same size pushes
-     the box's right edge out to meet the navbar. It floats beside the paragraph
-     it follows. (75vw = 100vw - 2*12.5% page padding; 1400px is the body cap.) */
-  margin: 0.3rem calc(42rem - min(75vw, 1400px)) 1.2rem 0;
-  padding: 0.7rem 0.95rem;
+  width: 20rem;
+  margin: 0 calc(42rem - min(75vw, 1400px)) 1.2rem 0;
+  padding: 1rem 0.95rem;
   background: #f3f1e7;
   border: 1px solid #ddd9c5;
   border-left: 3px solid #b3ad8e;
@@ -230,6 +227,12 @@ ul.toc .desc {
 .paper aside.sidenote p:first-child { margin-top: 0; }
 .paper aside.sidenote p:last-child { margin-bottom: 0; }
 
+/* Home photo inside sidenote: don't float, just display inline */
+.paper aside.sidenote .home-photo {
+  float: none;
+  margin: 0 0 1rem 0;
+}
+
 /* Not enough room for a margin column (gutter < the 16rem box once the note is
    right-aligned to the navbar): fold the note inline as a callout. */
 @media (max-width: 1320px) {
@@ -240,6 +243,31 @@ ul.toc .desc {
     border-radius: 4px;
     font-size: 1.2rem;
   }
+}
+
+/* Reading list aside: grey background, minimal vertical padding */
+.paper aside.sidenote.reading-list {
+  width: 20rem;
+  margin: -2.6rem calc(42rem - min(75vw, 1400px)) 1.2rem 0;
+  padding: 0.25rem 0.75rem;
+  background: #e8e8e8;
+  border-color: #ccc;
+  border-left-color: #999;
+}
+.paper aside.sidenote.reading-list h2 {
+  margin: 0.5rem 0;
+}
+.paper aside.sidenote.reading-list ul {
+  margin: 0 0 0.5rem 0;
+  padding-left: 1.2rem;
+}
+.paper aside.sidenote.reading-list .home-photo {
+  float: none;
+  text-align: center;
+  margin: 0 auto 0.5rem;
+}
+.paper aside.sidenote.reading-list .home-photo img {
+  margin: 0 auto;
 }
 
 /* ---- Edit variant of the sidenote: same box, tinted blue, with an "Edit"
@@ -302,9 +330,26 @@ ul.toc .desc {
 .paper .bookmark .bookmark-body p:last-child { margin-bottom: 0; }
 
 /* ---- Interlinked: reference graph page (blends into the page, no chrome) ---- */
+.home-title {
+  position: fixed;
+  top: calc(3rem + 0.8rem + 3rem + 1rem);
+  left: 12.5%;
+  z-index: 10;
+  font-weight: 400;
+  font-size: 3.2rem;
+  line-height: 1;
+  margin: 0;
+  color: #111;
+  pointer-events: none;
+}
 .graph-wrap {
-  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background: transparent;
+  z-index: 0;
 }
 /* Fade the canvas toward its edges so nodes dissolve into the page instead of
    being clipped at a hard rectangular border when zooming/panning. */
@@ -313,8 +358,8 @@ ul.toc .desc {
   touch-action: none; /* the canvas handles its own pan/pinch gestures */
   -webkit-user-select: none;
   user-select: none;
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 62%, transparent 100%);
-  mask-image: radial-gradient(ellipse at center, #000 62%, transparent 100%);
+  position: relative;
+  z-index: 1;
 }
 
 /* math & diagrams are the only embedded SVG (build.py aligns inline ones) */
@@ -327,4 +372,31 @@ ul.toc .desc {
   height: auto !important; /* override the SVG's inline height so wide figures
                               scale down proportionally instead of overflowing */
   vertical-align: middle;
+}
+
+/* ---- Mobile responsive ---- */
+@media (max-width: 768px) {
+  body { padding: 2rem 5% 4rem; }
+  nav { font-size: 1rem; margin-bottom: 2rem; }
+  .home-title {
+    font-size: 2rem;
+    left: 5%;
+    top: calc(2rem + 0.6rem + 2rem + 0.5rem);
+  }
+  .graph-wrap {
+    height: 100vh;
+  }
+  .paper aside.sidenote {
+    float: none;
+    width: auto;
+    margin: 1.4rem 0;
+    font-size: 1rem;
+  }
+  .paper aside.sidenote.reading-list {
+    width: auto;
+    margin: 1.4rem 0;
+  }
+  .paper h1.title { font-size: 2.2rem; }
+  .paper h2 { font-size: 1.8rem; }
+  .paper h3 { font-size: 1.4rem; }
 }

@@ -35,7 +35,7 @@ Let's start with a smaller example. $k = 2$ on the entire set.
 $
   "stalls"[] = [2, 12, 11, 3, 26, 7], k = 2
 $
-Since this has only $2$ cows, I want to keep them maximally distanced. That would be the stalls located at $2$ and $26$ for a maximum distance of $24$. Okay simple enough. Let's try $3$. In this case intuitively I want to be able to split this and find the middle distance between $2$ and $26$. That would be $frac(26 + 2, 2) = 14$. But since we don't have $14$ we choose its nearest neighbor which is $12$. Now the min distance would be $min(26 - 12, 12 - 2) = 10$. Hmmm this leads me to believe that there is potentially a `binary search`. The task is essentially, for each pair of stalls, we want to perform binary search on each of them and then find the point that maximizes the distance between each of the points on a number line.
+Since this has only $2$ cows, I want to keep them maximally distanced. That would be the stalls located at $2$ and $26$ for a maximum distance of $24$. Okay simple enough. Let's try $3$. In this case intuitively I want to be able to split this and find the middle distance between $2$ and $26$. That would be $frac(26 + 2, 2) = 14$. But since we don't have $14$ we choose its nearest neighbor which is $12$. Now the min distance would be $min(26 - 12, 12 - 2) = 10$. Hmmm this leads me to believe that there is potentially a _binary search_ going on here. The task is essentially, for each pair of stalls, we want to perform binary search on each of them and then find the point that maximizes the distance between each of the points on a number line.
 
 #figure(canvas({
   import draw: *
@@ -56,3 +56,11 @@ Since this has only $2$ cows, I want to keep them maximally distanced. That woul
   line((s(max) + 0.3, 0), (s(max) + 0.1, 0.1))
   line((s(max) + 0.3, 0), (s(max) + 0.1, -0.1))
 }))
+
+#aside[
+  Okay this is where I get stuck, since I am performing binary search on the positions of stalls. Most answers online tell me that its probably better if I perform binary search on some optimal value $d$ and check if its possible to place cows that far apart from one another.
+]
+
+If we continue for $k = 4$ the mid distance we have remaining would be $frac(12 + 2, 2) = 7$ which is indeed on our number line. The min distance would then devolve into $min(7 - 2, 12 - 7) = 5$.
+
+If we flip the answer around such that we want to optimize and find some distance $d$ such that we can place all the cows under, then run binary search on that value we can reach the solution.
