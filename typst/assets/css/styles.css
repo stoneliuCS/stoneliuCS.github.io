@@ -196,7 +196,10 @@ ul.toc .desc {
   border-radius: 4px;
   overflow-x: auto;
 }
-.paper code,
+.paper code {
+  font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: inherit;
+}
 .paper pre * {
   font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
 }

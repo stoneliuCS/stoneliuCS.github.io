@@ -79,17 +79,22 @@ _INLINE_MATH_TRAIL = re.compile(rf"</p>\s*({_INLINE_FRAME})", re.S)
 _INLINE_MATH_LEAD = re.compile(rf"({_INLINE_FRAME})\s*<p>", re.S)
 _SVG_HEIGHT = re.compile(r"height:\s*([\d.]+)em")
 
-# Inline-math SVGs carry no baseline, so they'd sit too high in the line. The
-# math axis is ~0.22em above the text baseline; align each equation's vertical
-# centre to it, so taller equations (e.g. inline fractions) shift down more.
+# Inline-math SVGs taller than 1em (fractions, integrals, etc.) need math-axis
+# centering because their content straddles both sides of the axis.  Shorter
+# SVGs (numbers, single letters) already sit on the baseline at the bottom of
+# the SVG and need no shift.
 _MATH_AXIS_EM = 0.22
+_TALL_INLINE = 1.0
 
 
 def _align_inline(svg: str) -> str:
     m = _SVG_HEIGHT.search(svg)
     if not m:
         return svg
-    valign = round(_MATH_AXIS_EM - float(m.group(1)) / 2, 3)
+    h = float(m.group(1))
+    if h <= _TALL_INLINE:
+        return svg
+    valign = round(_MATH_AXIS_EM - h / 2, 3)
     return svg.replace(
         'style="overflow: visible;',
         f'style="overflow: visible; vertical-align: {valign}em;',
