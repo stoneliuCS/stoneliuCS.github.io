@@ -223,6 +223,40 @@
   }
 }
 
+// An "update": a note that a specific article has been updated. `body` describes
+// what changed; `date` is shown in the header. Web -> <div class="update-note">;
+// standalone PDF -> a styled block.
+//   #update(date: "30 Jun 2026")[
+//     Added a new section on backpropagation.
+//   ]
+#let update(body, date: none) = {
+  if _input("web") == "true" {
+    html.elem("div", attrs: (class: "update-note"), {
+      html.elem("p", attrs: (class: "update-meta"), {
+        [Update]
+        if date != none { [ · #date] }
+      })
+      html.elem("div", attrs: (class: "update-body"), body)
+    })
+  } else {
+    block(
+      width: 100%,
+      inset: (x: 10pt, y: 8pt),
+      radius: 4pt,
+      fill: rgb("#eef5ee"),
+      stroke: (left: 2pt + rgb("#6a9a6a")),
+      {
+        text(size: 0.78em, weight: "bold", fill: rgb("#4a7a4a"))[
+          UPDATE#if date != none [ · #date]
+        ]
+        parbreak()
+        text(size: 0.95em, body)
+      },
+    )
+  }
+}
+
+
 #let _article(head, doc) = {
   // Give every heading an id so other pages (and a table of contents) can
   // deep-link to a section, e.g. /…/Automatic-Differentiation.html#the-chain-rule

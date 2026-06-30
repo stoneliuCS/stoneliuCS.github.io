@@ -305,6 +305,29 @@ ul.toc .desc {
 .paper .definition .def-body p:first-child { margin-top: 0; }
 .paper .definition .def-body p:last-child { margin-bottom: 0; }
 
+/* ---- Update: a note that an article has been updated ---- */
+.paper .update-note {
+  margin: 1.6rem 0;
+  padding: 0.7rem 1rem;
+  background: #eef5ee;
+  border: 1px solid #c5dcc5;
+  border-left: 3px solid #6a9a6a;
+  border-radius: 4px;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+.paper .update-note .update-meta {
+  margin: 0 0 0.4rem;
+  font-size: 0.78em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #4a7a4a;
+}
+.paper .update-note .update-body { margin: 0; }
+.paper .update-note .update-body p:first-child { margin-top: 0; }
+.paper .update-note .update-body p:last-child { margin-bottom: 0; }
+
 /* ---- Bookmark: a "paused here to explore a related topic" / WIP marker ---- */
 .paper .bookmark {
   margin: 1.6rem 0;

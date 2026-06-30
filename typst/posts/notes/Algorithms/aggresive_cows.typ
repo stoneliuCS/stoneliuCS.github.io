@@ -63,4 +63,62 @@ Since this has only $2$ cows, I want to keep them maximally distanced. That woul
 
 If we continue for $k = 4$ the mid distance we have remaining would be $frac(12 + 2, 2) = 7$ which is indeed on our number line. The min distance would then devolve into $min(7 - 2, 12 - 7) = 5$.
 
+#aside[I will note that this particular way of thinking for me is a little _counter-intuitive_ and I would never really approach a problem first-thing like this.]
+
 If we flip the answer around such that we want to optimize and find some distance $d$ such that we can place all the cows under, then run binary search on that value we can reach the solution.
+
+Essentially what is the maximum possible distance you can place cows given stalls? Well that would be the position of the smallest stall vs the largest stall. What is the smallest possible distance you can place two cows? Well that would be $1$. If we do that, then the pseudo-code becomes a lot easier to hash out. Let's first write the function _possible_ that determines given some distance $d$ if its possible to place the cows such that all cows are spaced at-least distance $d$ apart.
+
+```python
+def possible(self, stalls, k, d):
+  remaining_cows = k
+  idx = 0
+  prev_cow_pos = None
+  # Greedily place cows if the position is possible
+  while remaining_cows > 0 and idx < len(stalls):
+    curr_pos = stalls[idx]
+    if prev_cow_pos is None or (curr_pos - prev_cow_pos) >= d:
+      prev_cow_pos = curr_pos
+      remaining_cows -= 1
+    idx += 1
+  return remaining_cows == 0
+```
+
+Usually its always good to test these helper functions so lets check...
+```python
+assert True == possible([2,3,7,11,12,26], 2, 24) # Should be true
+assert False == possible([2,3,7,11,12,26], 3, 24) # Should be false
+assert False == possible([2,3,7,11,12,26], 3, 12) # Should be false
+assert True == possible([2,3,7,11,12,26], 3, 10) # Should be true!
+assert False == possible([2,3,7,11,12,26], 4, 7) # Should be false.
+assert True == possible([2,3,7,11,12,26], 4, 5) # Should be true.
+assert True == possible([2,3,7,11,12,26], 5, 1) # Should be true.
+```
+With those checks passing we can write the binary search on $d$...
+```python
+def aggressiveCows(self, stalls, k):
+    stalls = sorted(stalls)
+    l = 1
+    r = stalls[len(stalls) - 1] - stalls[0]
+    opt_d = 1
+    while l <= r:
+      d = (l + r) // 2
+      if self.possible(stalls, k, d):
+        # try to expand the distance using binary search.
+        l = d + 1
+        opt_d = d
+      else:
+        # If its not possible then we would have to make the distance smaller.
+        r = d - 1
+    return opt_d
+```
+Testing it out on the rudimentary example above...
+```python
+val = aggressiveCows([2,3,7,11,12,26], 2)
+assert val == 24
+val = aggressiveCows([2,3,7,11,12,26], 3)
+assert val == 10
+val = aggressiveCows([2,3,7,11,12,26], 4)
+assert val == 5
+```
+If we think about the overall time complexity, given $n$ stalls and $k$ cows, we would perform binary search a total of $k$ times. So the overall time complexity would have to be $O(k log(n))$.
