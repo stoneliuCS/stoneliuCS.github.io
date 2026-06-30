@@ -59,7 +59,7 @@ Picking back up where we left off, we can represent a sequence of $n$ words as j
 $
   Pr(X_1 = w_1, X_2 = w_2, dots, X_n = w_n)
 $
-There are a few ways to compute this probability, but neither are really appealing. The chain rule of probability involes computing a bunch of conditional probabilities together which isn't very practical. We can however make an assumption to give an approximate probability. That is we can assume the _markov assumption_. That is, instead of computing this monstrosity:
+There are a few ways to compute this probability, but neither are really appealing. The chain rule of probability involves computing a bunch of conditional probabilities together which isn't very practical. We can however make an assumption to give an approximate probability. That is we can assume the _markov assumption_. That is, instead of computing this monstrosity:
 $
   Pr(X_n | X_(1 : n - 1)) = Pr("blue" | "Roses are Red, Violets are")
 $
@@ -67,3 +67,213 @@ We can approximate it by assuming that each word in the sequence only depends on
 $
   Pr(X_n | X_(1 : n - 1)) approx Pr(X_n | X_(n - 1)) = Pr("blue" | "are")
 $
+== Maximum Likelihood Estimation
+An intuitive way to compute the probabilities of words from a _n-gram_ language model is to use #link("https://en.wikipedia.org/wiki/Maximum_likelihood_estimation")[maximum likelihood estimation]. To compute the probability of a particular word given a word before it $Pr(w_n | w_(n-1))$ we simply take that sequence $w_(n-1) w_n$ and then ask what are the counts in our corpus that match this word sequence exactly $w_(n-1) w_n$ vs what is the count of our words that match $w_(n-1) w$ for any word $w$ proceeding $w_(n-1)$. That is to say
+$
+  Pr(w_n | w_(n - 1)) = frac(C(w_(n-1) w_n), sum_w C(w_(n - 1) w))
+$
+The book postulates that
+$
+  sum_w C(w_(n - 1) w) = C(w_(n-1))
+$
+In other words, if we sum all the bigrams that start with the word $w_(n-1)$ in a corpus, it must be equal to the occurrences of $w_(n-1)$ in our corpus.
+
+For this particular implementation of the bigram, I will be training a _bigram_ language model on my website corpus. As I am currently writing the top $10$ words and their occurrences are as follows...
+
+#figure(
+  table(
+    columns: 11,
+    align: (
+      left,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+    ),
+    stroke: none,
+    [],
+    [*the*],
+    [*of*],
+    [*a*],
+    [*to*],
+    [*is*],
+    [*we*],
+    [*that*],
+    [*and*],
+    [*x*],
+    [*in*],
+
+    [*the*], [1], [2], [0], [0], [0], [0], [0], [0], [1], [1],
+    [*of*], [86], [0], [22], [0], [0], [0], [1], [1], [2], [0],
+    [*a*], [0], [0], [1], [2], [0], [0], [0], [0], [2], [0],
+    [*to*], [31], [0], [11], [1], [2], [1], [1], [0], [0], [0],
+    [*is*], [23], [2], [16], [18], [0], [4], [10], [0], [1], [2],
+    [*we*], [0], [0], [0], [0], [0], [0], [3], [0], [0], [0],
+    [*that*], [15], [2], [0], [1], [10], [17], [0], [0], [0], [2],
+    [*and*], [8], [1], [3], [0], [0], [2], [2], [0], [2], [0],
+    [*x*], [1], [0], [2], [0], [2], [2], [0], [3], [6], [3],
+    [*in*], [41], [0], [11], [0], [0], [0], [0], [1], [0], [0],
+  ),
+)
+
+Using this table, we can easily compute the conditional probabilities for any sequence $w_(n-1) w_n$ found in our training sequence. For example:
+$
+  Pr("that we") = frac(C("that we"), C("that")) approx 0.11
+$
+
+#figure(
+  table(
+    columns: 11,
+    align: (
+      left,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+      right,
+    ),
+    stroke: none,
+    [],
+    [*the*],
+    [*of*],
+    [*a*],
+    [*to*],
+    [*is*],
+    [*we*],
+    [*that*],
+    [*and*],
+    [*x*],
+    [*in*],
+
+    [*the*],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+
+    [*of*],
+    [0.29],
+    [0.00],
+    [0.07],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.01],
+    [0.00],
+
+    [*a*],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.01],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.01],
+    [0.00],
+
+    [*to*],
+    [0.12],
+    [0.00],
+    [0.04],
+    [0.00],
+    [0.01],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+
+    [*is*],
+    [0.11],
+    [0.01],
+    [0.08],
+    [0.09],
+    [0.00],
+    [0.02],
+    [0.05],
+    [0.00],
+    [0.00],
+    [0.01],
+
+    [*we*],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.02],
+    [0.00],
+    [0.00],
+    [0.00],
+
+    [*that*],
+    [0.08],
+    [0.01],
+    [0.00],
+    [0.01],
+    [0.06],
+    [0.11],
+    [0.00],
+    [0.01],
+    [0.00],
+    [0.01],
+
+    [*and*],
+    [0.05],
+    [0.01],
+    [0.02],
+    [0.00],
+    [0.00],
+    [0.01],
+    [0.01],
+    [0.00],
+    [0.03],
+    [0.00],
+
+    [*x*],
+    [0.01],
+    [0.00],
+    [0.01],
+    [0.00],
+    [0.01],
+    [0.01],
+    [0.00],
+    [0.02],
+    [0.04],
+    [0.03],
+
+    [*in*],
+    [0.29],
+    [0.00],
+    [0.08],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.00],
+    [0.01],
+    [0.00],
+    [0.00],
+  ),
+)

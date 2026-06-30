@@ -1,7 +1,7 @@
 #import "@preview/diagraph:0.3.7"
 
 #metadata((
-  title: "Use Cases and Class Diagrams",
+  title: "UML Diagrams",
   date: "2026-06-29",
 )) <post-meta>
 
