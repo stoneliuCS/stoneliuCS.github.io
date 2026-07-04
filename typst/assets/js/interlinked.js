@@ -39,6 +39,31 @@
     subGroup.get(key).add(n.id);
   }
 
+  // Give every note topic (its first category) a distinct hue so two topics can
+  // never collide on the same colour. Hashing the name to a hue (the old
+  // approach) could map different topics to the same/near hue. We also RESERVE a
+  // band around the fixed blue that `thoughts` nodes use (~220°) and spread the
+  // topics over the rest of the wheel, so a note topic can't read as a thought.
+  // Topics are centred within the allowed arc (the `+ 0.5`) to keep them off the
+  // band edges. Sorted so the assignment is stable across builds.
+  const THOUGHTS_HUE = 220; // matches the ethereal rgb(124,148,196) below
+  const RESERVE = 34; // half-width of the excluded band around THOUGHTS_HUE
+  const topics = [
+    ...new Set(
+      nodes
+        .filter((n) => n.section !== "thoughts" && n.section !== "home")
+        .map((n) => (n.categories && n.categories[0]) || null)
+        .filter(Boolean)
+    ),
+  ].sort();
+  const topicHue = new Map();
+  const arc = 360 - 2 * RESERVE; // usable span once the thoughts band is removed
+  const arcStart = THOUGHTS_HUE + RESERVE; // start just past the reserved band
+  topics.forEach((t, i) => {
+    const hue = (arcStart + ((i + 0.5) / topics.length) * arc) % 360;
+    topicHue.set(t, Math.round(hue));
+  });
+
   const canvas = document.createElement("canvas");
   wrap.appendChild(canvas);
   const ctx = canvas.getContext("2d");
@@ -84,8 +109,8 @@
       return on
         ? { fill: "#b3ad8e", stroke: "#6f6535" }
         : { fill: "#e2dec9", stroke: "#d3cdb2" };
-    let h = 0;
-    for (const ch of topic) h = (h * 31 + ch.charCodeAt(0)) % 360;
+    // distinct per-topic hue (assigned above), so no two topics share a colour
+    const h = topicHue.get(topic) || 0;
     return on
       ? { fill: `hsl(${h},36%,60%)`, stroke: `hsl(${h},42%,36%)` }
       : { fill: `hsl(${h},20%,82%)`, stroke: `hsl(${h},18%,76%)` };
@@ -120,6 +145,16 @@
     const k = groupKey(n);
     (groupMembers[k] = groupMembers[k] || []).push(n);
   }
+  // Anchor each group to its own sector around the centre so different groups
+  // settle in distinct regions and don't co-mingle (e.g. thoughts nodes drifting
+  // in among a note topic). Sorted keys -> stable, evenly-spaced angles.
+  const groupAngles = {};
+  Object.keys(groupMembers)
+    .sort()
+    .forEach((k, i, all) => {
+      groupAngles[k] = (i / all.length) * Math.PI * 2;
+    });
+  const groupCount = Object.keys(groupMembers).length;
 
   function step() {
     for (let i = 0; i < nodes.length; i++) {
@@ -137,6 +172,24 @@
         a.vy += fy;
         b.vx -= fx;
         b.vy -= fy;
+        // Hard minimum separation: never let two nodes sit in the same vicinity
+        // (overlapping / stacked). If they're closer than both radii plus a gap,
+        // push them straight apart. This overrides the clustering pull, which
+        // would otherwise collapse a 2-node group onto a single point.
+        const minD = drawRadius(a) + drawRadius(b) + 18;
+        if (d < minD) {
+          const push = ((minD - d) / d) * 0.5;
+          const sx = dx * push,
+            sy = dy * push;
+          if (a !== drag) {
+            a.x += sx;
+            a.y += sy;
+          }
+          if (b !== drag) {
+            b.x -= sx;
+            b.y -= sy;
+          }
+        }
       }
     }
     for (const l of links) {
@@ -153,21 +206,21 @@
       b.vx -= fx;
       b.vy -= fy;
     }
-    // clustering: pull each node toward its group's centroid
+    // clustering: pull each node toward its group's own anchor sector, so
+    // groups settle in distinct regions instead of drifting on top of one
+    // another. Anchor angles are fixed per group; the position tracks the
+    // current canvas size.
+    // Radius grows with the number of groups so the arc length between adjacent
+    // anchors stays roughly constant: ~0.26 at 5 groups (today's look), fanning
+    // onto a wider ring as topics are added, capped so nodes stay on-screen.
+    const groupR = Math.min(W, H) * Math.min(0.45, 0.18 + 0.016 * groupCount);
     for (const k in groupMembers) {
-      const arr = groupMembers[k];
-      if (arr.length < 2) continue;
-      let cx = 0,
-        cy = 0;
-      for (const n of arr) {
-        cx += n.x;
-        cy += n.y;
-      }
-      cx /= arr.length;
-      cy /= arr.length;
-      for (const n of arr) {
-        n.vx += (cx - n.x) * 0.04;
-        n.vy += (cy - n.y) * 0.04;
+      const ang = groupAngles[k];
+      const ax = W / 2 + Math.cos(ang) * groupR;
+      const ay = H / 2 + Math.sin(ang) * groupR;
+      for (const n of groupMembers[k]) {
+        n.vx += (ax - n.x) * 0.03;
+        n.vy += (ay - n.y) * 0.03;
       }
     }
     for (const n of nodes) {
