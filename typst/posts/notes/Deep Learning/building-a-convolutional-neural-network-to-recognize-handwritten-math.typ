@@ -3,10 +3,8 @@
   date: "2026-06-23",
 )) <post-meta>
 
-#import "../../../lib/web.typ": aside, bookmark, toc
+#import "../../../lib/web.typ": aside, bookmark
 #import "../../../lib/drawings.typ": draw-arrays
-
-#toc()
 
 == Convolutional Neural Networks
 

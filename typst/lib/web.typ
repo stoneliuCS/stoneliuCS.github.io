@@ -313,13 +313,17 @@
   }
 }
 
-// An article: title + byline (from --input) above the body.
+// An article: title + byline (from --input) above the body, followed by an
+// auto-generated table of contents built from the article's own headings (see
+// `toc`). No post needs to call `#toc()` itself; it renders nothing for posts
+// with no level-2+ headings.
 #let web-post(doc) = {
   nav(_input("current"))
   _article(
     {
       html.elem("h1", attrs: (class: "title"))[#_input("title")]
       html.elem("p", attrs: (class: "byline"))[#_input("date") · #_input("author")]
+      toc()
     },
     doc,
   )

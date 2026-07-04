@@ -7,7 +7,7 @@
 
 _A collection of my most hated and beloved matrix problems for my refreshment._
 
-== 1. Spiral Matrix
+== Spiral Matrix
 #link("https://leetcode.com/problems/spiral-matrix/description/")[Problem] goes like this. We have the following matrix
 
 ```

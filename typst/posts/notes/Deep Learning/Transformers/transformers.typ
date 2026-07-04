@@ -5,7 +5,7 @@
 )) <post-meta>
 
 #import "@preview/cetz:0.5.2"
-#import "../../../../lib/web.typ": aside, bookmark, link-post, toc
+#import "../../../../lib/web.typ": aside, bookmark, link-post
 
 To quote *3Blue1Brown*, a transformer is a just a very specific type of _neural network (Deep Learning)_. When prompting a _Large Language Model_, it will attempt to find the token that is most likely to occur to finish the sentence. Machine Learning is a very flexible approach to building a function, it doesn't require a specific set of procedures _(snippets of code)_ to produce an output, instead it has a bunch of *tunable parameters*. I interpret these to be the weights and biases for a deep learning model. In the case of #link("/2026/06/22/Spam-or-Ham.html")[supervised learning], we feed the network a bunch of inputs and their corresponding _correct_ outputs and use an algorithm called #link("/2026/06/17/Building-a-Neural-Network-from-scratch-in-Go.html#backpropogation")[backpropogation] to tune the weights and biases in such a way that the deep learning model can gradually minimize the error of its predictions.
 
