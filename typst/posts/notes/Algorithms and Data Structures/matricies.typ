@@ -3,9 +3,8 @@
   date: "2026-07-03",
 )) <post-meta>
 
-#import "../../../lib/web.typ": aside, update
-
-_A collection of my most hated and beloved matrix problems for my refreshment._
+#import "../../../lib/web.typ": aside, edit, update
+#import "../../../lib/drawings.typ": draw-matrix, draw-matrix-row
 
 == Spiral Matrix
 #link("https://leetcode.com/problems/spiral-matrix/description/")[Problem] goes like this. We have the following matrix
@@ -137,4 +136,175 @@ class Solution {
       return order;
     };
 };
+```
+#edit(date: "July 5th 2026")[Continuing with the matrix problems...]
+
+== Shortest Path in Binary Matrix
+#link("https://leetcode.com/problems/shortest-path-in-binary-matrix/description/?envType=problem-list-v2&envId=matrix")[Problem] goes like this:
+
+1. We are given an $n times n$ matrix with binary entries. We want to return the length of the shortest clear path in the matrix.
+2. A _Clear Path_ must satisfy
+  - It must go from the top left corner to the bottom right corner $(0,0) -> (n-1,n-1)$.
+  - All the visited cells are $0$.
+  - Adjacent cells are $8$ directionally connected.
+
+Okay so the first thing that we can check is that if the top left corner or the bottom right corner are either 1s we can immediately return $-1$ since clearly there is no clear path.
+
+Is this _DP (Dynamic Programming)_? I feel like I could solve this with a $2$ dimensional dynamic programming approach. As in, I can compute the shortest clear path from $(0,0)$ to each entry in my matrix. Take for example the following
+
+#draw-matrix-row(
+  (
+    (
+      (0, 0, 0),
+      (1, 1, 0),
+      (1, 1, 0),
+    ),
+    (
+      (1, $infinity$, $infinity$),
+      ($infinity$, $infinity$, $infinity$),
+      ($infinity$, $infinity$, $infinity$),
+    ),
+  ),
+)
+The left side matrix represents the actual matrix and the right side represents my 2-dimensional dynamic programming table. The update rule should be as follows (in a nut-shell):
+$
+  "dp"(i,j) = min("dp"(i,j), 1 + "dp"_"previous")
+$
+What is $"dp"_"previous"$? Really since we can move in $8$ possible directions that just means we can just diagonally. We never really want to backtrack on our answer since that would mean that we would add an additional step which is never optimal. Meaning the previous optimal jump that we were at. So if we follow the _DP_ algorithm as follows we can get:
+#aside[
+  First move one to the right so $min(1 + 1 = 2, infinity) = 2$
+]
+#draw-matrix(
+  (
+    (1, 2, $infinity$),
+    ($infinity$, $infinity$, $infinity$),
+    ($infinity$, $infinity$, $infinity$),
+  ),
+)
+#aside[
+  Next we will move to the adjacent right and also diagonal
+]
+#draw-matrix(
+  (
+    (1, 2, 3),
+    ($infinity$, $infinity$, $3$),
+    ($infinity$, $infinity$, $infinity$),
+  ),
+)
+#aside[
+  Since $min(3 + 1, 3) = 3$ we won't update the corresponding row, col.
+]
+#draw-matrix(
+  (
+    (1, 2, 3),
+    ($infinity$, $infinity$, $3$),
+    ($infinity$, $infinity$, $infinity$),
+  ),
+)
+#aside[
+  Finally $3 + 1 = 4$ which is of course smaller than infinity.
+]
+#draw-matrix(
+  (
+    (1, 2, 3),
+    ($infinity$, $infinity$, $3$),
+    ($infinity$, $infinity$, $4$),
+  ),
+)
+Our base case for our matrix will be that the top left corner must be $1$ since that counts as a single path in our matrix.
+
+#aside[
+  I am wrong again! Because we can move in $8$ seperate directions we cannot use traditional dynamic programming here because we cannot rely on our previous solutions. It may have worked for these smaller examples. But it cannot work here Take for example the following matrix:
+
+  #draw-matrix(
+    (
+      (0, 1, 0, 1),
+      (0, 1, 0, 1),
+      (1, 0, 1, 0),
+      (1, 1, 1, 1),
+    ),
+  )
+  We would need to visited the cell $i = 1, j = 2$ twice to get the optimal solution!
+]
+
+Okay after working through a few more examples and admittingly coding up the wrong solution, the dynamic programming approach will not work here. Which leads me to believe that we should just simply build a graph from our matrix and then run dijkstra's from the top left to the bottom right cells. For _reference_ here is my wrong solution
+```c
+class Solution {
+public:
+  int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+    int n = grid.size();
+    vector<vector<int>> dp(n, vector<int>(n,numeric_limits<int>::max() / 2));
+    if (grid[0][0] == 1 || grid[n-1][n-1] == 1) {
+      return - 1;
+    }
+    dp[0][0] = 1; // base case
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        if (grid[i][j] != 0 || (i == 0 && j == 0)) {
+          continue; // skip if its a 1 since there is clearly no clear path here.
+        }
+        if (i - 1 >= 0) {
+          // Check top
+          dp[i][j] = min(dp[i][j], 1 + dp[i - 1][j]);
+        }
+        if (j - 1 >= 0) {
+          // Check left
+          dp[i][j] = min(dp[i][j], 1 + dp[i][j - 1]);
+        }
+        if (i - 1 >= 0 && j - 1 >= 0) {
+          // Check left diagonal
+          dp[i][j] = min(dp[i][j], 1 + dp[i-1][j-1]);
+        }
+      }
+    }
+    if (dp[n-1][n-1] == numeric_limits<int>::max() / 2) {
+      return -1;
+    } else {
+      return dp[n-1][n-1];
+    }
+  }
+};
+```
+A better solution would be to build a _graph_ and perform s breadth first search since all the edge weights are equal. We will use level order traversal of the graph to get this done. Every time we finish a level we will increase our distance by $1$.
+#aside[
+  I'm still a novice when it comes to c++ so there are many things that I need to hash out before I can write clean and efficient c++ code.
+]
+```c
+int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+  unordered_map<long long, vector<pair<int,int>>> graph = this->buildGraph(grid);
+  // We can just run a bfs since we all the edge weights are going to be 1.
+  queue<pair<int,int>> grid_queue;
+  int n = grid.size();
+  grid_queue.push({0,0}); // Push the root node in our graph
+  unordered_set<long long> visited;
+  int dist = 1;
+  if (grid[0][0] == 1 || grid[n - 1][n -1] == 1) {
+    return -1;
+  }
+
+  while (grid_queue.size() > 0) {
+    queue<pair<int,int>> level;
+    int level_size = grid_queue.size();
+    for (int i = 0; i < level_size; i ++) {
+      pair<int,int> curr = grid_queue.front();
+      grid_queue.pop();
+      if (visited.find(key(curr.first, curr.second)) != visited.end()) {
+        continue;
+      }
+      visited.insert(key(curr.first, curr.second));
+      if (curr.first == n - 1 && curr.second == n - 1) {
+        return dist;
+      }
+      const auto &neighbors = graph[key(curr.first, curr.second)];
+      for (const auto& neighbor: neighbors) {
+        if (visited.find(key(neighbor.first, neighbor.second)) != visited.end()) {
+          continue;
+        }
+        grid_queue.push(neighbor);
+      }
+    }
+    dist += 1;
+  }
+  return -1;
+}
 ```

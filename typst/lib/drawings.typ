@@ -144,3 +144,105 @@
     }
   })
 }
+
+// Draw a 2D grid of cells, like a matrix: `data` is a list of rows (each a list
+// of cell values), rendered with row 0 on top and shared borders (no axes). A
+// cell value of `none` leaves that cell blank, so an all-`none` grid is an empty
+// lattice. `highlight` is a list of (row, col) pairs to shade -- handy for
+// marking a kernel / receptive field over a feature map.
+//
+// Returns content already wrapped in a #figure (so build.py embeds it as SVG),
+// so call it directly -- no #figure(...) needed:
+//   #draw-matrix((
+//     (1, 0, 2),
+//     (0, 3, 1),
+//     (4, 1, 0),
+//   ))
+//   // shade the top-left 2x2 window:
+//   #draw-matrix(grid-values, highlight: ((0,0), (0,1), (1,0), (1,1)))
+#let draw-matrix(
+  data,
+  cell: 0.9,
+  gap: 0,
+  fill: white,
+  highlight: (),
+  highlight-fill: rgb("#eef2f7"),
+) = {
+  import "@preview/cetz:0.3.4": canvas, draw
+  let step = cell + gap
+  let rows = data.len()
+  // Capture params into locals BEFORE `import draw: *`, which pulls cetz's own
+  // `fill` function into scope and would otherwise shadow the `fill` parameter.
+  let base-fill = fill
+  let mark-fill = highlight-fill
+  let marked = highlight
+  figure(canvas({
+    import draw: *
+    for (r, row) in data.enumerate() {
+      let y = (rows - 1 - r) * step // row 0 on top, rows stack downward
+      for (c, v) in row.enumerate() {
+        let x = c * step
+        let cell-fill = if (r, c) in marked { mark-fill } else { base-fill }
+        rect((x, y), (x + cell, y + cell), fill: cell-fill, stroke: 0.7pt + black)
+        if v != none { content((x + cell / 2, y + cell / 2), [#v]) }
+      }
+    }
+  }))
+}
+
+// Lay several matrices out in a ROW inside a single canvas (so it exports as one
+// SVG and actually sits side-by-side on the web -- a #grid of separate figures
+// is dropped by Typst's HTML export). `matrices` is a list of 2D data (each like
+// `draw-matrix`'s `data`), drawn left-to-right, vertically centred on a common
+// axis so matrices of different heights line up. `sep` is an optional symbol
+// drawn in the gap between each adjacent pair (e.g. $times$ for A x B, $+$ for a
+// sum); omit it for plain spacing. `highlight` is a list PARALLEL to `matrices`,
+// each entry a list of (row, col) pairs to shade in that matrix.
+//
+// Returns content already wrapped in a #figure (so build.py embeds it as SVG),
+// so call it directly -- no #figure(...) needed:
+//   #draw-matrix-row(((( 1,0),(0,1)), ((2,3),(4,5))), sep: $times$)
+//   #draw-matrix-row((A, B), highlight: (((0,0),), ()))  // mark A[0,0]
+#let draw-matrix-row(
+  matrices,
+  sep: none,
+  cell: 0.9,
+  gap: 0.7,
+  fill: white,
+  highlight: (),
+  highlight-fill: rgb("#eef2f7"),
+) = {
+  import "@preview/cetz:0.3.4": canvas, draw
+  // Capture params into locals BEFORE `import draw: *` (it pulls in cetz's own
+  // `fill` function, which would otherwise shadow the `fill` parameter).
+  let base-fill = fill
+  let mark-fill = highlight-fill
+  let all-marks = highlight
+  let sep-sym = sep
+  let heights = matrices.map(m => m.len() * cell)
+  let max-h = calc.max(..heights)
+  figure(canvas({
+    import draw: *
+    let x = 0
+    for (mi, m) in matrices.enumerate() {
+      // gap (and separator) sit BEFORE every matrix except the first
+      if mi > 0 {
+        if sep-sym != none { content((x + gap / 2, max-h / 2), sep-sym) }
+        x += gap
+      }
+      let rows = m.len()
+      let y0 = (max-h - rows * cell) / 2 // bottom edge, so every matrix centres on max-h/2
+      let marks = all-marks.at(mi, default: ())
+      for (r, row) in m.enumerate() {
+        let y = y0 + (rows - 1 - r) * cell
+        for (c, v) in row.enumerate() {
+          let cx = x + c * cell
+          let cell-fill = if (r, c) in marks { mark-fill } else { base-fill }
+          rect((cx, y), (cx + cell, y + cell), fill: cell-fill, stroke: 0.7pt + black)
+          if v != none { content((cx + cell / 2, y + cell / 2), [#v]) }
+        }
+      }
+      x += m.at(0).len() * cell
+    }
+  }))
+}
