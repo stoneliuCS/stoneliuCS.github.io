@@ -137,7 +137,7 @@ class Solution {
     };
 };
 ```
-#edit(date: "July 5th 2026")[Continuing with the matrix problems...]
+#update(date: "July 5th 2026")[Continuing with the matrix problems...]
 
 == Shortest Path in Binary Matrix
 #link("https://leetcode.com/problems/shortest-path-in-binary-matrix/description/?envType=problem-list-v2&envId=matrix")[Problem] goes like this:
@@ -265,7 +265,7 @@ public:
   }
 };
 ```
-A better solution would be to build a _graph_ and perform s breadth first search since all the edge weights are equal. We will use level order traversal of the graph to get this done. Every time we finish a level we will increase our distance by $1$.
+A better solution would be to build a _graph_ and perform a breadth first search since all the edge weights are equal. We will use level order traversal of the graph to get this done. Every time we finish a level we will increase our distance by $1$.
 #aside[
   I'm still a novice when it comes to c++ so there are many things that I need to hash out before I can write clean and efficient c++ code.
 ]

@@ -36,47 +36,55 @@
 // number of `../` depends on folder depth:
 //   posts/<section>/<file>.typ          -> #import "../../lib/web.typ": aside
 //   posts/<section>/<topic>/<file>.typ  -> #import "../../../lib/web.typ": aside
-// `edit: true` turns it into a dated "edit" note: same sidenote layout/size,
-// tinted blue, with an "Edit · <date>" header. `edit(...)` below is the alias.
-#let aside(body, edit: false, date: none, variant: none) = {
-  let head = if edit {
-    if _input("web") == "true" {
-      html.elem("p", attrs: (class: "edit-meta"), {
-        [Edit]
-        if date != none { [ · #date] }
-      })
-    } else {
-      text(size: 0.78em, weight: "bold", fill: rgb("#6f8fb8"))[
-        EDIT#if date != none [ · #date]
-      ]
-      parbreak()
-    }
-  }
-  let classes = if edit { "sidenote edit" } else { "sidenote" }
-  if variant != none { classes = classes + " " + variant }
+// `variant` appends an extra class (e.g. "reading-list") for a styled variant.
+#let aside(body, variant: none) = {
+  let classes = if variant != none { "sidenote " + variant } else { "sidenote" }
   if _input("web") == "true" {
-    html.elem(
-      "aside",
-      attrs: (class: classes),
-      { head; body },
-    )
+    html.elem("aside", attrs: (class: classes), body)
   } else {
     block(
       width: 100%,
       inset: (x: 10pt, y: 8pt),
       radius: 4pt,
-      fill: if edit { rgb("#eef2f7") } else { luma(246) },
-      stroke: (left: 2pt + if edit { rgb("#6f8fb8") } else { luma(200) }),
-      text(size: 0.88em, { head; body }),
+      fill: luma(246),
+      stroke: (left: 2pt + luma(200)),
+      text(size: 0.88em, body),
     )
   }
 }
 
-// A dated edit callout = a blue sidenote stamped "Edit". Just `aside` with the
-// flag set, so it shares the same layout, font, and responsive behavior.
+// A dated "edit" banner: a full-width note in the text flow marking that the
+// article was revised. Same banner style as #bookmark / #update (tinted blue),
+// NOT a margin sidenote. Web -> <div class="edit-note">; standalone PDF -> a
+// styled block.
 //   #edit[Reworked this section.]
 //   #edit(date: "22 Jun 2026")[Reworked this section.]
-#let edit(body, date: none) = aside(body, edit: true, date: date)
+#let edit(body, date: none) = {
+  if _input("web") == "true" {
+    html.elem("div", attrs: (class: "edit-note"), {
+      html.elem("p", attrs: (class: "edit-meta"), {
+        [Edit]
+        if date != none { [ · #date] }
+      })
+      html.elem("div", attrs: (class: "edit-body"), body)
+    })
+  } else {
+    block(
+      width: 100%,
+      inset: (x: 10pt, y: 8pt),
+      radius: 4pt,
+      fill: rgb("#eef2f7"),
+      stroke: (left: 2pt + rgb("#6f8fb8")),
+      {
+        text(size: 0.78em, weight: "bold", fill: rgb("#6f8fb8"))[
+          EDIT#if date != none [ · #date]
+        ]
+        parbreak()
+        text(size: 0.95em, body)
+      },
+    )
+  }
+}
 
 // A labelled definition block: a term and its definition. On the web it renders
 // as <div class="definition"> (term label + body); in standalone PDF it degrades

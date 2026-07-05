@@ -270,14 +270,19 @@ ul.toc .desc {
   margin: 0 auto;
 }
 
-/* ---- Edit variant of the sidenote: same box, tinted blue, with an "Edit"
-   header. Triggered by `aside(edit: true)` / the `edit(...)` alias. ---- */
-.paper aside.sidenote.edit {
+/* ---- Edit: a full-width banner (like .bookmark / .update-note) marking that
+   the article was revised, tinted blue. Emitted by the `edit(...)` helper. ---- */
+.paper .edit-note {
+  margin: 1.6rem 0;
+  padding: 0.7rem 1rem;
   background: #eef2f7;
-  border-color: #d3ddea;
-  border-left-color: #6f8fb8;
+  border: 1px solid #d3ddea;
+  border-left: 3px solid #6f8fb8;
+  border-radius: 4px;
+  font-size: 1.05rem;
+  line-height: 1.45;
 }
-.paper aside.sidenote.edit .edit-meta {
+.paper .edit-note .edit-meta {
   margin: 0 0 0.4rem;
   font-size: 0.78em;
   font-weight: 600;
@@ -285,6 +290,9 @@ ul.toc .desc {
   text-transform: uppercase;
   color: #6f8fb8;
 }
+.paper .edit-note .edit-body { margin: 0; }
+.paper .edit-note .edit-body p:first-child { margin-top: 0; }
+.paper .edit-note .edit-body p:last-child { margin-bottom: 0; }
 
 /* ---- Definition: a labelled term + its definition, inline in the flow ---- */
 .paper .definition {
