@@ -1,5 +1,5 @@
 #metadata((
-  title: "Snackables",
+  title: "snackables",
   date: "2026-07-06",
 )) <post-meta>
 
@@ -101,5 +101,48 @@ vector<int> twoSum(vector<int>& nums, int target) {
     }
   }
   return vector<int>{};
+}
+```
+
+== Group Anagrams
+#link("https://leetcode.com/problems/group-anagrams/description/")[Problem] wants us to group anagrams. An _anagram_ is simply a permutation of another word. For example, if we are given the following words:
+
+```
+["eat","tea","tan","ate","nat","bat"]
+// Then it should be possible to do the following
+// Take each word and put them in a hashset. That way we can efficiently check if two words belong together.
+// For example eat and tea are anagrams since they have the same sets of characters in them.
+```
+Hmm now the question becomes how can I group them? I have a way of telling if two strings have the same characters using the set data structure. We would need a way to hash a string such that it will always return some normalized key.
+
+```c
+string hashAnagram(string str) {
+  unordered_map<char, int> freqs;
+
+  for (char c : str) {
+    freqs[c]++;
+  }
+  string key = "";
+  set<char> chars(str.begin(), str.end());
+  for (char c : chars) {
+    key += string(1, c) + to_string(freqs[c]);
+  }
+  return key;
+}
+
+vector<vector<string>> groupAnagrams(vector <string>& strs) {
+  unordered_map<string, vector<string>> groups;
+  vector<vector<string>> groupedAnagrams;
+
+  for (string str : strs) {
+    string hash = hashAnagram(str);
+    groups[hash].push_back(str);
+  }
+
+  for (const auto& [_, group] : groups) {
+    groupedAnagrams.push_back(group);
+  }
+
+  return groupedAnagrams;
 }
 ```
