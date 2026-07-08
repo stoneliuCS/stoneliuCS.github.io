@@ -308,3 +308,105 @@ int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
   return -1;
 }
 ```
+
+#update(date: "July 7th 2026")[]
+
+== Rotate Image
+#link("https://leetcode.com/problems/rotate-image/description/")[Problem] goes like this:
+
+We have a square image represented as a $2$ dimensional matrix. We want to rotate the image $90 degree$ clockwise. The twist comes in the fact that we have to rotate the image in-place. So lets step through some examples:
+
+#draw-matrix(
+  (
+    (1, 2, 3),
+    (4, 5, 6),
+    (7, 8, 9),
+  ),
+)
+
+When we rotate the image $90 degree$ clockwise, i'm going to literally pick up my computer screen and turn it $90 degree$ clockwise. That means that the row vector $(7,8,9)$ becomes a column vector $(7,8,9)$. And so on, and so forth for the other row vectors.
+
+#draw-matrix(
+  (
+    (7, 4, 1),
+    (8, 5, 2),
+    (9, 6, 3),
+  ),
+)
+Now _obviously_, the reason why they don't want us to allocate a new matrix is because this problem becomes trivially easy when that happens. We just take the transpose of each row vector and append it onto our matrix. But there is another thing that I notice here. Let's take a look at the corners of our matrix.
+
+It kinda seems like the corners of our matrix are swapping corners. Same with the middle pieces as well. But a $3 times 3$ matrix looks really convienient, lets try with a $4 times 4$.
+
+#draw-matrix-row(
+  (
+    (
+      (1, 2, 3, 4),
+      (5, 6, 7, 8),
+      (9, 10, 11, 12),
+      (13, 14, 15, 16),
+    ),
+    (
+      (13, 9, 5, 1),
+      (14, 10, 6, 2),
+      (15, 11, 7, 3),
+      (16, 12, 8, 4),
+    ),
+  ),
+)
+
+Same thing happens here! It looks like the number at $(0,0) -> (0,3), (0,3) -> (3,3), (3,3) -> (3,0), (3,0) -> (0,0)$. Lets look at where the rest goes. $(0,1) -> (1,3), (1,3) -> (3,2), (3,2) -> (2,0), (2,0) -> (0,2)$. Hmm... a little confusing now.
+
+Maybe the pattern is, if you can see the last digit representing the column of the coordinate, that becomes the new row! But what about the row? Wait a minute, we should probably think about this as peeling an orange. We rotate the first layer then go into the second layer and so on. How many layers are there? Actually I am not too sure. But I do notice, $n = 1,2 -> 2 "layers"$, $n = 3,4 -> 3 "layers"$, $n = 5,6 -> 4 "layers"$. And so on. Isn't that just half a diagonal across the square? Which means we just perform integer division and round up. So the number of layers we have is 
+$ ceil.l frac(n, 2) ceil.r + 1 $
+#edit[Actually since the middle layer is always just a $1 times 1$ we can ditch the $+ 1$.]
+Essentially we want to create a function that takes a position 
+$ ("row", "col") -> ("col", "row" + (n - 1) mod (n) $
+#edit[
+  This isn't right, since it does not send $(3,3) -> (3,0)$
+]
+Granted that we are operating on a layer by layer basis. One more thing I want to figure out is the number of rotations per _layer_.
+
+#draw-matrix-row(
+  (
+    (
+      (1, 2, 3),
+      (4, 5, 6),
+      (7, 8, 9),
+    ),
+    (
+      (1, 2, 3, 4),
+      (5, 6, 7, 8),
+      (9, 10, 11, 12),
+      (13, 14, 15, 16),
+    ),
+    (
+      (1, 2, 3, 4, 5),
+      (6, 7, 8, 9, 10),
+      (11, 12, 13, 14, 15),
+      (16, 17, 18, 19, 20),
+      (21, 22, 23, 24, 25),
+    ),
+  ),
+)
+
+Okay after looking at some of my faulty logic again, it appears that the rule is a lot more simple than I have thought. I did observe that the column dictates the row of the swap. Consider any point $(i,j)$. Then a rotation clockwise $90 degree$ sends $(i,j) -> (j, n - 1 - i)$ where $i < n / 2$ and $i <= j < n - 1 - i$. Essentially we are just subtracting the length of the side of the matrix _(off by one)_ by the relative position of the current index we are rotating it against, that will determine where its target column will hit.
+
+#aside[
+  This one was pretty tricky to do first time around!
+]
+```c
+void rotate(vector<vector<int>>& mat) {
+  int n = mat.size();
+  int layers = (n / 2);
+
+  for (int i = 0; i < layers; i++) {
+    for (int j = i; j < n - 1 - i; j++) {
+      int temp = mat[i][j];
+      mat[i][j] = mat[n - 1 - j][(n - 1) - (n - 1 - i)];
+      mat[n - 1 - j][(n - 1) - (n - 1 - i)] = mat[n - 1 - i][n - 1 - j];
+      mat[n - 1 - i][n - 1 - j] = mat[j][n - 1 - i];
+      mat[j][n - 1 - i] = temp;
+    }
+  }
+}
+```
