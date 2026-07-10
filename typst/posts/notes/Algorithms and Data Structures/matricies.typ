@@ -410,3 +410,111 @@ void rotate(vector<vector<int>>& mat) {
   }
 }
 ```
+
+== Number of Black Boxes
+#link("https://leetcode.com/problems/number-of-black-blocks/description/")[Problem] goes like this:
+We have a 2D integer matrix _coordinates_ where the coordinates[i] = [x, y] which indicates that coordinate box is colored black everything else is white.
+
+A _block_ is defined to be a $2 times 2$ submatrix of the grid and we want to be able to return a $0$ indexed array such that it is the number of blocks that contains exactly $i$ black cells.
+
+Okay so this looks to be pretty simple, we perform a $2 times 2$ matrix scan and then just log the number of black squares that appear in said matrix. This is my first approach:
+```c
+vector<long long> countBlackBlocks(int m, int n, vector<vector<int>>& coordinates) {
+  unordered_set<uint64_t> coords;
+  vector<long long> counts(5);
+
+  for (vector<int> &coord : coordinates) {
+    uint64_t x = (uint64_t) coord[0];
+    int y = coord[1];
+    coords.insert((x << 32) | y);
+  }
+
+  for (int i = 0; i < n - 1; i++) {
+    for (int j = 0; j < m - 1; j++) {
+      int count = 0;
+      uint64_t x = (uint64_t) j;
+      int y = i;
+
+      // Top left corner
+      if (coords.find((x << 32) | y) != coords.end()) {
+        count += 1;
+      }
+
+      // Bottom left corner
+      if (coords.find((x << 32) | y + 1) != coords.end()) {
+        count += 1;
+      }
+
+      // Top right corner
+      if (coords.find((x + 1 << 32) | y) != coords.end()) {
+        count += 1;
+      }
+
+      // bottom right corner
+      if (coords.find((x + 1 << 32) | y + 1) != coords.end()) {
+        count += 1;
+      }
+
+      counts[count] += 1;
+    }
+  }
+  return counts;
+}
+```
+However this would be $O((n - 1) times (m - 1)) = O(m n)$ which is pretty large. If we think about it, we can just iterate over the black coordinates and use each coordinate as a pivot and see if there are any $2 times 2$ boxes in that range. Lets take some example matrix $3 times 3$ which we have labeled _"B"_ for black and _"W"_ for white.
+
+#draw-matrix(
+  (
+    ("W", "W", "W"),
+    ("W", "B", "W"),
+    ("W", "W", "W"),
+  )
+)
+
+The coordinate $(1,1) -> "B"$ contains $4$ squares of dimension $2 times 2$. If we label each of the squares by their top left corners we have the list $(0,0), (0,1), (1,0), (1,1)$. Meaning that our output array is precisely $[0,4,0,0,0]$.
+
+Lets try another example, one with $3$ black coordinates.
+
+#draw-matrix(
+  (
+    ("B", "W", "B"),
+    ("W", "B", "W"),
+    ("W", "W", "W"),
+  )
+)
+We still label our squares with the top left corners $(0,0), (0,1), (1,0), (1,1)$. We can keep them in a hashmap. We map each left corner block to the number of black coordinates it contains.
+
+```c
+uint64_t key(int x, int y) {
+  return ((uint64_t) x << 32) | y;
+}
+
+vector<long long> countBlackBlocks(int m, int n, vector<vector<int>>& coordinates) { 
+  vector<long long> counts(5);
+  unordered_map<uint64_t, int> blocks;
+
+  for (vector<int> &coord : coordinates) {
+    int x = coord[0];
+    int y = coord[1];
+    if (x - 1 >= 0 && y - 1 >= 0) {
+      blocks[key(x - 1, y - 1)] += 1;
+    }
+    if (x - 1 >= 0 && y + 1 < n) {
+      blocks[key(x - 1, y)] += 1;
+    }
+    if (y - 1 >= 0 && x + 1 < m) {
+      blocks[key(x, y - 1)] += 1;
+    }
+    if (x + 1 < m && y + 1 < n) {
+      blocks[key(x, y)] += 1;
+    }
+  }
+  for (const auto& [k,v] : blocks) {
+    counts[v] += 1;
+  }
+  // Go through each coord again and check which boxes have those within them.
+  long long empty_blocks = ((long long)n - 1) * (m - 1) - (counts[1] + counts[2] + counts[3] + counts[4]);
+  counts[0] = empty_blocks;
+  return counts;
+}
+```
