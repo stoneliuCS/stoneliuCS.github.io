@@ -1,6 +1,6 @@
 #metadata((
   title: "text justification",
-  date: "2026-07-10",
+  date: "2026-07-11",
 )) <post-meta>
 
 #link("https://leetcode.com/problems/text-justification/description/")[Problem] goes like this, we get a list of words and integer representing the maximum width for each line.
