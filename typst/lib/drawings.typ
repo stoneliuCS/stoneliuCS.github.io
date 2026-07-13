@@ -246,3 +246,111 @@
     }
   }))
 }
+
+// Circle layout: place every node evenly spaced around a circle, starting at the
+// top and going clockwise (id order). Simple, deterministic, and always tidy --
+// nodes never overlap or drift, whatever the edges are. The radius is chosen so
+// adjacent nodes sit `spacing` apart. Returns a dict id -> (x, y). Internal
+// helper for `draw-graph`.
+#let _graph-layout(ids, spacing: 2.4) = {
+  let n = ids.len()
+  if n == 0 { return (:) }
+  if n == 1 { return (ids.at(0): (0.0, 0.0)) }
+  // adjacent chord on a circle of radius r is 2*r*sin(pi/n); solve for r.
+  let r = spacing / (2 * calc.sin(calc.pi / n))
+  let pos = (:)
+  for (i, id) in ids.enumerate() {
+    let a = calc.pi / 2 - i / n * 2 * calc.pi // start at top, go clockwise
+    pos.insert(id, (calc.cos(a) * r, calc.sin(a) * r))
+  }
+  pos
+}
+
+// Draw a graph -- nodes and edges -- in a single cetz canvas, with the layout
+// done FOR you (nodes placed evenly around a circle): you don't supply any
+// positions. Minimal setup: pass just a list of edges; nodes are collected from
+// them automatically.
+//
+// `edges` entries are either a 2-tuple ("a", "b") or a dict
+// (from: "a", to: "b", label: <content>) when you want a weight/label on the
+// edge. `directed: true` adds arrowheads. Node labels default to the id; override
+// any via `labels` (id -> content). Pass `nodes:` only to fix the id set/order or
+// to include an isolated node that no edge mentions.
+//
+// Returns content already wrapped in a #figure (so build.py embeds it as SVG),
+// so call it directly -- no #figure(...) needed:
+//   #draw-graph((("a", "b"), ("b", "c"), ("c", "a")))              // triangle
+//   #draw-graph((("s", "t"), (from: "s", to: "u", label: $7$)), directed: true)
+//   #draw-graph(("0", "1"), nodes: ("0", "1", "2", "3"))           // one edge + isolated
+#let draw-graph(
+  edges,
+  nodes: none,
+  directed: false,
+  labels: (:),
+  radius: 0.42,
+  node-fill: white,
+  node-stroke: black,
+  edge-stroke: 0.7pt + black,
+) = {
+  import "@preview/cetz:0.3.4": canvas, draw
+  // Tolerate a single edge passed WITHOUT the wrapping list, so both
+  //   draw-graph(("0", "1"))          <- one bare edge, or (("0","1")) which is
+  //                                      the same thing (redundant parens)
+  //   draw-graph((from: "a", to: "b"))
+  // work like the normal list form. A real edge element is an array or a dict;
+  // if the first item is neither (a bare node id), the whole value is one edge.
+  let edge-list = if type(edges) == dictionary {
+    (edges,)
+  } else if edges.len() > 0 and type(edges.at(0)) != array and type(edges.at(0)) != dictionary {
+    (edges,)
+  } else {
+    edges
+  }
+  // Normalize every edge to (from, to, label).
+  let norm = edge-list.map(e => if type(e) == dictionary {
+    (e.from, e.to, e.at("label", default: none))
+  } else {
+    (e.at(0), e.at(1), e.at(2, default: none))
+  })
+  // Node ids: use `nodes` if given, else collect from edges in first-seen order.
+  let ids = if nodes != none { nodes } else {
+    let seen = ()
+    for (u, v, _) in norm {
+      if u not in seen { seen.push(u) }
+      if v not in seen { seen.push(v) }
+    }
+    seen
+  }
+  let pos = _graph-layout(ids)
+  figure(canvas({
+    import draw: *
+    // Edges first, so the node circles sit on top of the line ends.
+    for (from, to, label) in norm {
+      let pa = pos.at(from)
+      let pb = pos.at(to)
+      let dx = pb.at(0) - pa.at(0)
+      let dy = pb.at(1) - pa.at(1)
+      let d = calc.max(calc.sqrt(dx * dx + dy * dy), 0.0001)
+      let (ux, uy) = (dx / d, dy / d)
+      // shrink the segment to each node's rim so circles/arrowheads aren't hidden
+      let start = (pa.at(0) + ux * radius, pa.at(1) + uy * radius)
+      let end = (pb.at(0) - ux * radius, pb.at(1) - uy * radius)
+      line(
+        start, end,
+        stroke: edge-stroke,
+        ..if directed { (mark: (end: ">")) } else { (:) },
+      )
+      if label != none {
+        content(
+          ((start.at(0) + end.at(0)) / 2, (start.at(1) + end.at(1)) / 2),
+          box(fill: white, inset: 1pt, label),
+        )
+      }
+    }
+    // Nodes on top: a circle plus its label (the id unless overridden).
+    for id in ids {
+      circle(pos.at(id), radius: radius, fill: node-fill, stroke: node-stroke)
+      content(pos.at(id), labels.at(id, default: [#id]))
+    }
+  }))
+}
