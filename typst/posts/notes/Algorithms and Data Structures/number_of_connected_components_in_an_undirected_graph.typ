@@ -1,5 +1,5 @@
 #metadata((
-  title: "Number of Connected Components in an Undirected Graph",
+  title: "number of connected components in undirected graph",
   date: "2026-07-13",
 )) <post-meta>
 #import "../../../lib/drawings.typ": draw-graph
