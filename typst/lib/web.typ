@@ -330,6 +330,9 @@
   _article(
     {
       html.elem("h1", attrs: (class: "title"))[#_input("title")]
+      if _input("wip") != "" {
+        html.elem("p", attrs: (class: "wip-badge"))[Work in progress]
+      }
       html.elem("p", attrs: (class: "byline"))[#_input("date") · #_input("author")]
       toc()
     },

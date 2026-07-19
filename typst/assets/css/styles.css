@@ -172,6 +172,20 @@ ul.toc .desc {
   color: #333;
   margin: 0 0 2.6rem;
 }
+.paper .wip-badge {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.25rem 0.6rem;
+  background: #fbf0d9;
+  border: 1px solid #e6c98a;
+  border-left: 3px solid #c99a3a;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #8a6a24;
+}
 .paper h2 {
   font-style: italic;
   font-weight: 400;

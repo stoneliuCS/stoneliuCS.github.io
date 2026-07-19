@@ -229,6 +229,8 @@ def post_entry(src: Path, meta: dict) -> dict:
         entry["description"] = meta["description"]
     if meta.get("featured"):
         entry["featured"] = True
+    if meta.get("wip"):
+        entry["wip"] = True
     return entry
 
 
@@ -325,6 +327,7 @@ def build() -> None:
                 "title": p["title"],
                 "date": p["date_meta"],
                 "author": p["author"],
+                "wip": "true" if p.get("wip") else "",
             },
         )
         emit(p["out"], html, p["title"])
