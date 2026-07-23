@@ -1,5 +1,5 @@
 #metadata((
-  title: "sys design",
+  title: "Foundational System Design Concepts",
   date: "2026-07-23",
 )) <post-meta>
 
