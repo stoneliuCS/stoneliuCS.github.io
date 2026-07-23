@@ -146,3 +146,32 @@ vector<vector<string>> groupAnagrams(vector <string>& strs) {
   return groupedAnagrams;
 }
 ```
+== Guess Number Higher or Lower
+#link("https://leetcode.com/problems/guess-number-higher-or-lower/description/")[Problem] goes as follows...
+
+I pick a number from $1$ to $n$ inclusive. You have to guess which number I picked. Everytime you guess, there will be an API that returns whether you were higher, lower, or at it. Producing $-1,1,0$ respectively.
+
+This is a textbook example of binary search. Nothing else needed.
+
+```python
+class Solution(object):
+    def guessNumber(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        lo = 1
+        hi = n
+
+        while lo <= hi:
+          mid = (lo + hi) // 2
+          res = guess(mid)
+
+          if res == 0:
+            return mid
+          elif res == 1:
+            lo = mid + 1
+          else:
+            hi = mid - 1
+```
+Expected time complexity is obviously $log(n)$
