@@ -3,6 +3,8 @@
   date: "2026-07-06",
 )) <post-meta>
 
+#import "../../../lib/web.typ": update
+
 == Zigzag Problem
 A tuple $(a,b,c)$ is a _zigzag_ if it satisfies one of these conditions
 - $a < b > c$
@@ -10,7 +12,7 @@ A tuple $(a,b,c)$ is a _zigzag_ if it satisfies one of these conditions
 
 The goal is to construct a binary array for each consecutive triplet where:
 - $1$ represents that triplet is a zig zag.
-- $0$ represents that triple is not a zig zag. 
+- $0$ represents that triple is not a zig zag.
 
 Pretty tame problem just scan every triplet pair and check if they satisfy the constraints of the problem.
 
@@ -52,7 +54,7 @@ Easy enough!
 
 == Sum of Digits
 
-Problem is simple enough, given some two digit integer $n$ return the sum of its digits. Usually I am tempted to just convert this to a string and do it that way but there is a much simpler way we can get the digits of a number using modular arthimetic. 
+Problem is simple enough, given some two digit integer $n$ return the sum of its digits. Usually I am tempted to just convert this to a string and do it that way but there is a much simpler way we can get the digits of a number using modular arthimetic.
 
 For example $29$, taking it modulo $10$ will give us the first digit $9$ since $29 mod 10 equiv 9$. To get the leading digit we can simply do integer division by $10$. So $29 / 10 = 2$.
 
@@ -146,6 +148,7 @@ vector<vector<string>> groupAnagrams(vector <string>& strs) {
   return groupedAnagrams;
 }
 ```
+#update(date: "7/23/2026")[Another easy problem]
 == Guess Number Higher or Lower
 #link("https://leetcode.com/problems/guess-number-higher-or-lower/description/")[Problem] goes as follows...
 

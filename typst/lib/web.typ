@@ -202,31 +202,45 @@
     return outline(title: title, depth: 3, indent: auto)
   }
   context {
-    // Group level-3 headings under the preceding level-2 heading.
-    let items = ()
+    // Nest headings (any depth, h2 > h3 > h4 > ...) using a stack keyed by
+    // heading level: a heading closes out every open node at its level or
+    // deeper, then attaches to whatever's left open above it.
+    let roots = ()
+    let stack = ()
     for h in query(heading).filter(h => h.level >= 2) {
-      if h.level <= 2 or items.len() == 0 {
-        items.push((h: h, children: ()))
+      while stack.len() > 0 and stack.last().level >= h.level {
+        let popped = stack.pop()
+        let node = (h: popped.h, children: popped.children)
+        if stack.len() > 0 {
+          let parent = stack.pop()
+          parent.children.push(node)
+          stack.push(parent)
+        } else {
+          roots.push(node)
+        }
+      }
+      stack.push((level: h.level, h: h, children: ()))
+    }
+    while stack.len() > 0 {
+      let popped = stack.pop()
+      let node = (h: popped.h, children: popped.children)
+      if stack.len() > 0 {
+        let parent = stack.pop()
+        parent.children.push(node)
+        stack.push(parent)
       } else {
-        let last = items.pop()
-        last.children.push(h)
-        items.push(last)
+        roots.push(node)
       }
     }
-    if items.len() == 0 { return }
+    if roots.len() == 0 { return }
     let link-to(h) = html.elem("a", attrs: (href: "#" + _slug(h.body)), h.body)
+    let render(items) = html.elem("ol", items.map(it => html.elem("li", {
+      link-to(it.h)
+      if it.children.len() > 0 { render(it.children) }
+    })).join())
     html.elem("nav", attrs: (class: "toc-box"), {
       html.elem("p", attrs: (class: "toc-title"))[#title]
-      html.elem("ol", {
-        for it in items {
-          html.elem("li", {
-            link-to(it.h)
-            if it.children.len() > 0 {
-              html.elem("ol", it.children.map(c => html.elem("li", link-to(c))).join())
-            }
-          })
-        }
-      })
+      render(roots)
     })
   }
 }
