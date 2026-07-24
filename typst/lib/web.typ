@@ -153,6 +153,17 @@
 //   #post-url("informatons")                      -> "/2026/06/18/informatons.html"
 //   #post-url("nn", anchor: "backpropogation")    -> ".../...#backpropogation"
 #let post-url(slug, anchor: none) = {
+  // build.py's metadata-bootstrap pass (read_post_meta -> `typst query`, no
+  // --input) runs before /_posts.json is written, since discover_posts()
+  // must evaluate every post's content to find its <post-meta> label before
+  // it can build and write that very manifest. Any post using #link-post
+  // gets compiled during that pass too, so reading the not-yet-written file
+  // would hard-crash the whole build. Only the real web render (build.py
+  // always passes --input web=true, after the manifest is written) needs the
+  // resolved URL, so short-circuit otherwise.
+  if _input("web") != "true" {
+    return "#" + if anchor != none { anchor } else { "" }
+  }
   let hits = json("/_posts.json").filter(p => p.at("slug", default: none) == slug)
   if hits.len() == 0 {
     panic("link-post: no post with slug '" + slug + "'")
