@@ -1,7 +1,9 @@
 #metadata((
-  title: "Decode Ways",
+  title: "decode ways",
   date: "2026-07-24",
 )) <post-meta>
+
+#import "../../../lib/web.typ": aside, update
 
 #link("https://leetcode.com/problems/decode-ways/description/")[Problem] goes like this...
 
@@ -132,4 +134,7 @@ With the subsequent test cases here...
   }
 }
 ```
+#aside[
+  I noticed that the optimal solution here uses bottom up dynamic programming instead of top-down. Will keep that in mind next time!
+]
 Here I use a similar technique to what I did with #link("/2026/07/12/reg-exp-matching.html")[Regular Expression Matching]. This technique is called mutually recursive function definitions. I use the outer most function to store the work performed on the inner function call in a table.
