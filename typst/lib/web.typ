@@ -113,6 +113,36 @@
   }
 }
 
+// A "Q&A" block: a question paired with its answer, inline in the flow. Handy
+// for interview-prep notes (a recorded question + your answer/reflection).
+// Web -> <div class="qa"> (question label + answer body); standalone PDF -> a
+// styled block. Import it like `aside` (path relative to the post).
+//   #qa("What is the CAP theorem?")[
+//     You can only guarantee two of Consistency, Availability, and Partition
+//     tolerance at once...
+//   ]
+#let qa(question, body) = {
+  if _input("web") == "true" {
+    html.elem("div", attrs: (class: "qa"), {
+      html.elem("p", attrs: (class: "qa-question"))[#question]
+      html.elem("div", attrs: (class: "qa-answer"), body)
+    })
+  } else {
+    block(
+      width: 100%,
+      inset: (x: 10pt, y: 8pt),
+      radius: 4pt,
+      fill: rgb("#f3f0f7"),
+      stroke: (left: 2pt + rgb("#8a6fb0")),
+      {
+        text(weight: "bold", fill: rgb("#6b4f8f"))[#question]
+        parbreak()
+        text(size: 0.95em, body)
+      },
+    )
+  }
+}
+
 // A "bookmark": a marker that the article pauses here while you go explore a
 // related topic (a WIP / continuation flag). `body` says where you're headed (and
 // can hold a #link to the related post); `date` is shown in the header. Web ->

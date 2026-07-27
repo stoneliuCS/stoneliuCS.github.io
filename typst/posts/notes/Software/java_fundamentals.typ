@@ -3,6 +3,8 @@
   date: "2026-07-24",
 )) <post-meta>
 
+#import "../../../lib/web.typ": qa
+
 Given that I have an upcoming Java interview, I think it would be a nice time to catergorize and index some notes about this programming language. #link("https://en.wikipedia.org/wiki/Java")[Java] provides a bunch of features including its strong emphasis on _Object Oriented Programming_ paradigm. Its also secure in the fact that you can share java programs without given the underlying source code.
 
 == 1. What is the JVM
@@ -16,3 +18,23 @@ Class variables are static variables that are stored within the Class itself. Th
 
 == 4. Stack Vs. Heap
 Stack memory is typically allocated when a function is called. It pushes things like the arguments of the function, local variables, and return addresses. Once the function returns, everything on the stack is popped off meaning memory management is automatic. Heap memory is different since it can be accessed globally across the entire program. This is typically done when the size of something is unknown at compile-time, for example a resize-able array list.
+
+== Trivia
+#qa(
+  "Explain the difference between == and .equals() for objects, and why this matters for String and custom classes.",
+  "`==` tests for aliasing equality, as in do the two objects in question share the same memory address? `.equals` method is a method that is usually meant to be overriding objects with your own equality tests.",
+)
+#qa(
+  "Override equals() and hashCode() for a Point class with x and y fields. Explain why you must override both together.",
+  "You must override both if you want to use it in any hash data structure such as a hashset or hashmap. Two objects that are equal according to the `equals` method must also produce the same hash as obtained by the `hashCode` function.",
+)
+
+#qa(
+  "What's the difference between abstract classes and interfaces? When would you use one over the other?",
+  "Abstract classes are classes that cannot be instantiated but are defined to be a class in which other sub classes can inherit methods, properties/fields, and overrride/overload methods. Interfaces are contracts that provide a set of methods must be implemented by a concrete class. Abstract classes are primarily used for IS-A relations on objects. Like a Cat IS-AN animal. Interfaces should be used when you want to abstract away the implementations of classes to just their public methods.",
+)
+
+#qa(
+  "Explain method overloading vs overriding, and what happens with overloading when autoboxing/varargs are involved",
+  "Overloading means to have a method on a class with the same name but with different arguments in the method signature. Overriding means to override a specific method either as a subclass or on the interface with a new implementation. Overriding does not change the method signature. You cannot overload methods with its object counterpart. You can change varargs to its array counterpart though.",
+)

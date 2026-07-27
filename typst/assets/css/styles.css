@@ -214,7 +214,6 @@ ul.toc .desc {
 }
 .paper code {
   font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
-  font-size-adjust: 0.52;
 }
 .paper pre * {
   font-family: "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
@@ -326,6 +325,24 @@ ul.toc .desc {
 .paper .definition .def-body { margin: 0; }
 .paper .definition .def-body p:first-child { margin-top: 0; }
 .paper .definition .def-body p:last-child { margin-bottom: 0; }
+
+/* ---- Q&A: a question paired with its answer, inline in the flow ---- */
+.paper .qa {
+  margin: 1.6rem 0;
+  padding: 0.7rem 1rem;
+  background: #f3f0f7;
+  border: 1px solid #ddd3e8;
+  border-left: 3px solid #8a6fb0;
+  border-radius: 4px;
+}
+.paper .qa .qa-question {
+  margin: 0 0 0.3rem;
+  font-weight: 600;
+  color: #6b4f8f;
+}
+.paper .qa .qa-answer { margin: 0; }
+.paper .qa .qa-answer p:first-child { margin-top: 0; }
+.paper .qa .qa-answer p:last-child { margin-bottom: 0; }
 
 /* ---- Update: a note that an article has been updated ---- */
 .paper .update-note {
