@@ -80,7 +80,10 @@
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   }
   resize();
-  window.addEventListener("resize", resize);
+  window.addEventListener("resize", () => {
+    resize();
+    wake();
+  });
 
   // seed nodes on a circle around the centre
   nodes.forEach((n, i) => {
@@ -156,7 +159,19 @@
     });
   const groupCount = Object.keys(groupMembers).length;
 
+  // Cooling factor (mirrors d3-force's alpha): starts hot so the seeded layout
+  // can settle, then decays toward 0 so the sim goes fully still instead of
+  // jittering forever. Dragging a node or resizing the window reheats it so
+  // the layout can react, then it cools back down again.
+  let alpha = 1;
+  const ALPHA_DECAY = 0.02;
+  const ALPHA_MIN = 0.001;
+  function wake(a = 0.35) {
+    alpha = Math.max(alpha, a);
+  }
+
   function step() {
+    if (alpha <= ALPHA_MIN) return false;
     for (let i = 0; i < nodes.length; i++) {
       for (let j = i + 1; j < nodes.length; j++) {
         const a = nodes[i],
@@ -178,7 +193,7 @@
         // would otherwise collapse a 2-node group onto a single point.
         const minD = drawRadius(a) + drawRadius(b) + 18;
         if (d < minD) {
-          const push = ((minD - d) / d) * 0.5;
+          const push = ((minD - d) / d) * 0.5 * alpha;
           const sx = dx * push,
             sy = dy * push;
           if (a !== drag) {
@@ -227,11 +242,13 @@
       n.vx += (W / 2 - n.x) * 0.0015;
       n.vy += (H / 2 - n.y) * 0.0015;
       if (n === drag) continue;
-      n.x += n.vx * 0.85;
-      n.y += n.vy * 0.85;
+      n.x += n.vx * 0.85 * alpha;
+      n.y += n.vy * 0.85 * alpha;
       n.vx *= 0.82;
       n.vy *= 0.82;
     }
+    alpha += (0 - alpha) * ALPHA_DECAY;
+    return true;
   }
 
   function draw() {
@@ -401,6 +418,7 @@
     if (n) {
       drag = n; // grab a node
       dragMoved = false;
+      wake(); // let neighbours react while it's being dragged
     } else {
       pan = { sx: px, sy: py, ox, oy }; // grab the canvas
       canvas.style.cursor = "grabbing";
@@ -456,6 +474,7 @@
         if (n) {
           drag = n;
           dragMoved = false;
+          wake(); // let neighbours react while it's being dragged
         } else {
           pan = { sx: px, sy: py, ox, oy };
           panMoved = false;
