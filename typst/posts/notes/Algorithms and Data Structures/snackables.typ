@@ -178,3 +178,67 @@ class Solution(object):
             hi = mid - 1
 ```
 Expected time complexity is obviously $log(n)$
+
+== Single Element in a Sorted Array
+
+```python3
+class Solution:
+  def singleNonDuplicate(self, nums: list[int]) -> int:
+    l = 0
+    r = len(nums) - 1
+
+    while l <= r:
+      mid = (l + r) // 2
+
+      # Check if we are the unique element
+
+      left_val = nums[mid - 1] if mid - 1 >= 0 else None
+      right_val = nums[mid + 1] if mid + 1 < len(nums) else None
+
+      if nums[mid] != left_val and nums[mid] != right_val:
+        return nums[mid]
+
+      if mid % 2 == 0:
+        if left_val == nums[mid]:
+          r = mid - 1
+        else:
+          l = mid + 1
+      else:
+        if left_val == nums[mid]:
+          l = mid + 1
+        else:
+          r = mid - 1
+
+# Begin Test Harness
+
+if __name__ == "__main__":
+  # With the run time being log(n) this gives me a strong hint that the algorithm needed is binary search.
+  # If we perform binary search on left and right pointers: 0 and 8, then their adjacent elements to the left and right are the ones that are supposedly going to be duplicates.
+
+  # 1,1,2,3,3,4,4,8,8
+  # The question remains... How the heck are we supposed to find the unique element in log(n) time?
+
+  # Thought: Suppose the unique element was at the middle 1, 1, 2, 3, 3. The parity of each element dictates
+  # Which element comes forth. If we chose the mid point to be say 4 and its not a duplicate.
+
+
+  singleNonDuplicate = Solution().singleNonDuplicate
+
+  nums = [1,1,2,3,3,4,4,8,8]
+  assert 2 == singleNonDuplicate(nums)
+
+  nums = [1,1,2,2,3,4,4,8,8]
+  assert 3 == singleNonDuplicate(nums)
+
+  nums = [1,1,2,2,3,3,4,8,8]
+  assert 4 == singleNonDuplicate(nums)
+
+  nums = [1,1,2,2,3,3,4,4,8]
+  assert 8 == singleNonDuplicate(nums)
+
+  nums = [1,2,2,3,3,4,4,8,8]
+  assert 1 == singleNonDuplicate(nums)
+
+  nums = [5]
+  assert 5 == singleNonDuplicate(nums)
+```
